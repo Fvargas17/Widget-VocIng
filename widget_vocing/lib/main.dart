@@ -30,31 +30,50 @@ class VocabularyScreen extends StatefulWidget {
 }
 
 class _VocabularyScreenState extends State<VocabularyScreen> {
-  late final Future<VocabularyItem> _itemFuture;
+  final _random = Random();
+  List<VocabularyItem>? _items;
+  int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _itemFuture = loadVocabulary().then((items) {
-      return items[Random().nextInt(items.length)];
+    loadVocabulary().then((items) {
+      setState(() {
+        _items = items;
+        _currentIndex = _random.nextInt(items.length);
+      });
+    });
+  }
+
+  void _showNextWord() {
+    final items = _items!;
+    if (items.length <= 1) return;
+    var nextIndex = _currentIndex;
+    while (nextIndex == _currentIndex) {
+      nextIndex = _random.nextInt(items.length);
+    }
+    setState(() {
+      _currentIndex = nextIndex;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final items = _items;
     return Scaffold(
       appBar: AppBar(title: const Text('Widget VocIng')),
       body: Center(
-        child: FutureBuilder<VocabularyItem>(
-          future: _itemFuture,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const CircularProgressIndicator();
-            }
-            return VocabularyCard(item: snapshot.data!);
-          },
-        ),
+        child: items == null
+            ? const CircularProgressIndicator()
+            : VocabularyCard(item: items[_currentIndex]),
       ),
+      floatingActionButton: items == null
+          ? null
+          : FloatingActionButton(
+              onPressed: _showNextWord,
+              tooltip: 'Otra palabra',
+              child: const Icon(Icons.refresh),
+            ),
     );
   }
 }
@@ -76,6 +95,15 @@ class VocabularyCard extends StatelessWidget {
             Text(
               item.word,
               style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '/${item.pronunciation}/',
+              style: const TextStyle(
+                fontSize: 16,
+                fontStyle: FontStyle.italic,
+                color: Colors.grey,
+              ),
             ),
             const SizedBox(height: 20),
             Text(
