@@ -8,9 +8,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:widget_vocing/data/vocabulary_repository.dart'
+    as vocabulary_repository;
 import 'package:widget_vocing/main.dart';
+import 'package:widget_vocing/services/pack_service.dart' as pack_service;
 
 void main() {
+  // Los tests no deben depender de red ni de I/O de archivos real (canales
+  // de plataforma sin implementación real, y el reloj simulado de
+  // flutter_test no puede esperar de forma fiable I/O real): se desactivan
+  // el chequeo de packs nuevos (HTTP) y la lectura de packs descargados.
+  pack_service.debugDisableNetworkChecks = true;
+  vocabulary_repository.debugSkipDownloadedPacks = true;
+
   testWidgets(
     'Carga el vocabulario y el botón de "otra palabra" cambia la tarjeta sin repetir',
     (WidgetTester tester) async {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'data/vocabulary_repository.dart';
 import 'models/vocabulary_item.dart';
+import 'services/pack_service.dart';
 
 void main() {
   runApp(const WidgetVocIngApp());
@@ -42,6 +43,48 @@ class _VocabularyScreenState extends State<VocabularyScreen> {
         _items = items;
         _currentIndex = _random.nextInt(items.length);
       });
+      _checkForNewPacks();
+    });
+  }
+
+  Future<void> _checkForNewPacks() async {
+    final newPacks = await checkForNewPacks();
+    if (newPacks.isEmpty || !mounted) return;
+
+    final totalWords = newPacks.fold<int>(0, (sum, pack) => sum + pack.wordCount);
+    final packNames = newPacks.map((pack) => pack.name).join(', ');
+
+    final shouldDownload = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Nuevas palabras disponibles'),
+        content: Text(
+          'Hay $totalWords palabras nuevas disponibles ($packNames). '
+          '¿Deseas descargarlas?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Sí'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldDownload != true) return;
+
+    for (final pack in newPacks) {
+      await downloadPack(pack);
+    }
+
+    final updatedItems = await loadVocabulary();
+    if (!mounted) return;
+    setState(() {
+      _items = updatedItems;
     });
   }
 

@@ -1,5 +1,6 @@
 [
   {
+    "id": "base_0001",
     "word": "OVERWHELMED",
     "pronunciation": "óver-uélmd",
     "description": "Feeling unable to cope because there is too much to deal with.",
@@ -7,6 +8,7 @@
     "example": "I felt overwhelmed with work this week."
   },
   {
+    "id": "base_0002",
     "word": "PROCRASTINATE",
     "pronunciation": "pro-crás-ti-neit",
     "description": "To delay or postpone doing something that needs to be done.",
@@ -14,6 +16,7 @@
     "example": "I always procrastinate before starting a big project."
   },
   {
+    "id": "base_0003",
     "word": "TO BRING UP",
     "pronunciation": "tu bring ap",
     "description": "To mention or introduce a topic in a conversation.",
@@ -21,6 +24,7 @@
     "example": "She brought up an interesting point during the meeting."
   },
   {
+    "id": "base_0004",
     "word": "STRAIGHTFORWARD",
     "pronunciation": "streit-fór-uord",
     "description": "Simple and easy to understand or do, without complications.",
@@ -28,6 +32,7 @@
     "example": "The instructions were straightforward, so I finished quickly."
   },
   {
+    "id": "base_0005",
     "word": "TO GET THE HANG OF IT",
     "pronunciation": "tu guet de jang of it",
     "description": "To learn how to do something after practicing it.",

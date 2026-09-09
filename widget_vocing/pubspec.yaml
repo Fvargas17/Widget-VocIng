@@ -35,6 +35,16 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  # Descarga de packs de vocabulario adicionales desde GitHub raw content.
+  http: ^1.2.2
+  # Ubicar el directorio de documentos local donde se guardan los packs.
+  path_provider: ^2.1.5
+  # Registro de qué packs/versiones ya se descargaron.
+  shared_preferences: ^2.3.3
+
+dependency_overrides:
+  path_provider_foundation: 2.4.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

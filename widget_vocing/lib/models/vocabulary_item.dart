@@ -1,5 +1,6 @@
 class VocabularyItem {
   const VocabularyItem({
+    required this.id,
     required this.word,
     required this.pronunciation,
     required this.description,
@@ -7,6 +8,7 @@ class VocabularyItem {
     required this.example,
   });
 
+  final String id;
   final String word;
   final String pronunciation;
   final String description;
@@ -15,6 +17,7 @@ class VocabularyItem {
 
   factory VocabularyItem.fromJson(Map<String, dynamic> json) {
     return VocabularyItem(
+      id: json['id'] as String,
       word: json['word'] as String,
       pronunciation: json['pronunciation'] as String,
       description: json['description'] as String,

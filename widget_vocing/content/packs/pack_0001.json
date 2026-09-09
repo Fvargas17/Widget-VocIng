@@ -1,0 +1,42 @@
+[
+  {
+    "id": "pack_0001_0001",
+    "word": "TO ACHIEVE",
+    "pronunciation": "tu a-chív",
+    "description": "To successfully complete something or reach a goal.",
+    "translation": "Lograr o alcanzar algo con éxito.",
+    "example": "She worked hard to achieve her career goals."
+  },
+  {
+    "id": "pack_0001_0002",
+    "word": "TO RELY ON",
+    "pronunciation": "tu ri-lái on",
+    "description": "To trust or depend on someone or something.",
+    "translation": "Confiar o depender de alguien o algo.",
+    "example": "You can rely on him to finish the job on time."
+  },
+  {
+    "id": "pack_0001_0003",
+    "word": "TO POINT OUT",
+    "pronunciation": "tu point aut",
+    "description": "To indicate or mention something specific.",
+    "translation": "Señalar o mencionar algo específico.",
+    "example": "The teacher pointed out several mistakes in the essay."
+  },
+  {
+    "id": "pack_0001_0004",
+    "word": "RELUCTANT",
+    "pronunciation": "ri-lák-tant",
+    "description": "Unwilling or hesitant to do something.",
+    "translation": "Reacio o poco dispuesto a hacer algo.",
+    "example": "He was reluctant to change his plans at the last minute."
+  },
+  {
+    "id": "pack_0001_0005",
+    "word": "TO FIGURE OUT",
+    "pronunciation": "tu fí-guiur aut",
+    "description": "To understand or solve something after thinking about it.",
+    "translation": "Entender o resolver algo después de pensarlo.",
+    "example": "It took me a while to figure out how the app worked."
+  }
+]
