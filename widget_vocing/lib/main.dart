@@ -1,4 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+
+import 'data/vocabulary_repository.dart';
+import 'models/vocabulary_item.dart';
 
 void main() {
   runApp(const WidgetVocIngApp());
@@ -12,29 +17,113 @@ class WidgetVocIngApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Widget VocIng',
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Widget VocIng')),
-        body: Center(
-          child: Card(
-            margin: const EdgeInsets.all(24),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('OVERWHELMED', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 20),
-                  const Text('Feeling unable to cope because there is too much to deal with.', textAlign: TextAlign.center, style: TextStyle(fontSize: 18)),
-                  const SizedBox(height: 12),
+      home: const VocabularyScreen(),
+    );
+  }
+}
 
-                  const Text('Sentirse abrumado porque hay demasiadas cosas que manejar.', textAlign: TextAlign.center, style: TextStyle(fontSize: 16),),
-                  const SizedBox(height: 20),
+class VocabularyScreen extends StatefulWidget {
+  const VocabularyScreen({super.key});
 
-                  const Text('“I felt overwhelmed with work this week.”', textAlign: TextAlign.center, style: TextStyle(fontStyle: FontStyle.italic, fontSize: 16),),
-                ],
+  @override
+  State<VocabularyScreen> createState() => _VocabularyScreenState();
+}
+
+class _VocabularyScreenState extends State<VocabularyScreen> {
+  final _random = Random();
+  List<VocabularyItem>? _items;
+  int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadVocabulary().then((items) {
+      setState(() {
+        _items = items;
+        _currentIndex = _random.nextInt(items.length);
+      });
+    });
+  }
+
+  void _showNextWord() {
+    final items = _items!;
+    if (items.length <= 1) return;
+    var nextIndex = _currentIndex;
+    while (nextIndex == _currentIndex) {
+      nextIndex = _random.nextInt(items.length);
+    }
+    setState(() {
+      _currentIndex = nextIndex;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final items = _items;
+    return Scaffold(
+      appBar: AppBar(title: const Text('Widget VocIng')),
+      body: Center(
+        child: items == null
+            ? const CircularProgressIndicator()
+            : VocabularyCard(item: items[_currentIndex]),
+      ),
+      floatingActionButton: items == null
+          ? null
+          : FloatingActionButton(
+              onPressed: _showNextWord,
+              tooltip: 'Otra palabra',
+              child: const Icon(Icons.refresh),
+            ),
+    );
+  }
+}
+
+class VocabularyCard extends StatelessWidget {
+  const VocabularyCard({super.key, required this.item});
+
+  final VocabularyItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(24),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              item.word,
+              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '/${item.pronunciation}/',
+              style: const TextStyle(
+                fontSize: 16,
+                fontStyle: FontStyle.italic,
+                color: Colors.grey,
               ),
             ),
-          ),
+            const SizedBox(height: 20),
+            Text(
+              item.description,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              item.translation,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              '“${item.example}”',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 16),
+            ),
+          ],
         ),
       ),
     );

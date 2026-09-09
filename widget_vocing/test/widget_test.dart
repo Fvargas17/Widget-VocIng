@@ -11,20 +11,35 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:widget_vocing/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const WidgetVocIngApp());
+  testWidgets(
+    'Carga el vocabulario y el botón de "otra palabra" cambia la tarjeta sin repetir',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(const WidgetVocIngApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+      // Mientras se carga el asset, se muestra un indicador de progreso.
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+      // Espera a que se resuelva la carga asíncrona del vocabulario.
+      await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
-  });
+      expect(find.text('Widget VocIng'), findsOneWidget);
+      expect(find.byType(Card), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+
+      final firstWord =
+          (tester.widget(find.byType(VocabularyCard)) as VocabularyCard)
+              .item
+              .word;
+
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      final secondWord =
+          (tester.widget(find.byType(VocabularyCard)) as VocabularyCard)
+              .item
+              .word;
+
+      expect(secondWord, isNot(equals(firstWord)));
+    },
+  );
 }
