@@ -11,20 +11,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:widget_vocing/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('Muestra una tarjeta de vocabulario tras cargar los datos', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const WidgetVocIngApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Mientras se carga el asset, se muestra un indicador de progreso.
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Espera a que se resuelva la carga asíncrona del vocabulario.
+    await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Widget VocIng'), findsOneWidget);
+    expect(find.byType(Card), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 }
