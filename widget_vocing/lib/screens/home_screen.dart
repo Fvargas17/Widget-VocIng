@@ -4,8 +4,13 @@ import 'package:flutter/material.dart';
 
 import '../data/vocabulary_repository.dart';
 import '../models/vocabulary_item.dart';
+import '../services/learned_words_service.dart';
 import '../services/pack_service.dart';
 import '../widgets/app_drawer.dart';
+
+/// Máximo de palabras previas que se recuerdan en memoria para el botón
+/// "atrás", para no dejar crecer el historial de forma indefinida.
+const _maxHistorySize = 10;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,15 +22,27 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _random = Random();
   List<VocabularyItem>? _items;
-  int _currentIndex = 0;
+  Set<String> _learnedIds = {};
+  VocabularyItem? _currentItem;
+  final List<VocabularyItem> _history = [];
+
+  List<VocabularyItem> get _activeItems =>
+      _items!.where((item) => !_learnedIds.contains(item.id)).toList();
 
   @override
   void initState() {
     super.initState();
-    loadVocabulary().then((items) {
+    Future.wait([loadVocabulary(), getLearnedWordIds()]).then((results) {
+      final items = results[0] as List<VocabularyItem>;
+      final learnedIds = results[1] as Set<String>;
+      final active =
+          items.where((item) => !learnedIds.contains(item.id)).toList();
       setState(() {
         _items = items;
-        _currentIndex = _random.nextInt(items.length);
+        _learnedIds = learnedIds;
+        _currentItem = active.isEmpty
+            ? null
+            : active[_random.nextInt(active.length)];
       });
       _checkForNewPacks();
     });
@@ -73,34 +90,97 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showNextWord() {
-    final items = _items!;
-    if (items.length <= 1) return;
-    var nextIndex = _currentIndex;
-    while (nextIndex == _currentIndex) {
-      nextIndex = _random.nextInt(items.length);
+    final active = _activeItems;
+    if (active.length <= 1) return;
+    var next = _currentItem;
+    while (next?.id == _currentItem?.id) {
+      next = active[_random.nextInt(active.length)];
     }
     setState(() {
-      _currentIndex = nextIndex;
+      final current = _currentItem;
+      if (current != null) {
+        _history.add(current);
+        if (_history.length > _maxHistorySize) {
+          _history.removeAt(0);
+        }
+      }
+      _currentItem = next;
+    });
+  }
+
+  void _showPreviousWord() {
+    if (_history.isEmpty) return;
+    setState(() {
+      _currentItem = _history.removeLast();
+    });
+  }
+
+  Future<void> _markCurrentAsLearned() async {
+    final current = _currentItem;
+    if (current == null) return;
+    await markWordAsLearned(current.id);
+    if (!mounted) return;
+    setState(() {
+      _learnedIds = {..._learnedIds, current.id};
+      final active = _activeItems;
+      _currentItem =
+          active.isEmpty ? null : active[_random.nextInt(active.length)];
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final items = _items;
+    final current = _currentItem;
     return Scaffold(
       appBar: AppBar(title: const Text('Widget VocIng')),
       drawer: const AppDrawer(currentScreen: AppScreen.home),
       body: Center(
         child: items == null
             ? const CircularProgressIndicator()
-            : VocabularyCard(item: items[_currentIndex]),
+            : current == null
+                ? const Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Text(
+                      '¡Has aprendido todas las palabras disponibles!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  )
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      VocabularyCard(item: current),
+                      const SizedBox(height: 12),
+                      TextButton.icon(
+                        onPressed: _markCurrentAsLearned,
+                        icon: const Icon(Icons.check_circle_outline),
+                        label: const Text('Marcar como aprendida'),
+                      ),
+                    ],
+                  ),
       ),
       floatingActionButton: items == null
           ? null
-          : FloatingActionButton(
-              onPressed: _showNextWord,
-              tooltip: 'Otra palabra',
-              child: const Icon(Icons.refresh),
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FloatingActionButton(
+                  heroTag: 'prev_word_fab',
+                  onPressed: _history.isEmpty ? null : _showPreviousWord,
+                  tooltip: 'Palabra anterior',
+                  child: const Icon(Icons.arrow_back),
+                ),
+                FloatingActionButton(
+                  heroTag: 'next_word_fab',
+                  onPressed:
+                      current == null || _activeItems.length <= 1
+                          ? null
+                          : _showNextWord,
+                  tooltip: 'Otra palabra',
+                  child: const Icon(Icons.refresh),
+                ),
+              ],
             ),
     );
   }

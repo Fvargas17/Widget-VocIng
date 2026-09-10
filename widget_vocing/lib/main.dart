@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'screens/home_screen.dart';
+import 'screens/learned_words_screen.dart';
 import 'screens/pack_management_screen.dart';
 
 export 'screens/home_screen.dart' show HomeScreen, VocabularyCard;
@@ -21,6 +22,7 @@ class WidgetVocIngApp extends StatelessWidget {
       routes: {
         '/': (_) => const HomeScreen(),
         '/packs': (_) => const PackManagementScreen(),
+        '/learned': (_) => const LearnedWordsScreen(),
       },
     );
   }

@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:widget_vocing/data/vocabulary_repository.dart'
     as vocabulary_repository;
@@ -20,6 +21,10 @@ void main() {
   // el chequeo de packs nuevos (HTTP) y la lectura de packs descargados.
   pack_service.debugDisableNetworkChecks = true;
   vocabulary_repository.debugSkipDownloadedPacks = true;
+  // HomeScreen consulta las palabras aprendidas vía shared_preferences en
+  // initState; sin este mock, el canal de plataforma real nunca resuelve y
+  // pumpAndSettle() queda esperando para siempre.
+  SharedPreferences.setMockInitialValues({});
 
   testWidgets(
     'Carga el vocabulario y el botón de "otra palabra" cambia la tarjeta sin repetir',
@@ -41,7 +46,7 @@ void main() {
               .item
               .word;
 
-      await tester.tap(find.byType(FloatingActionButton));
+      await tester.tap(find.byTooltip('Otra palabra'));
       await tester.pumpAndSettle();
 
       final secondWord =
