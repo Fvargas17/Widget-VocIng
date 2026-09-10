@@ -16,6 +16,7 @@ const _indexUrl =
     'https://raw.githubusercontent.com/Fvargas17/Widget-VocIng/main/widget_vocing/content/packs/index.json';
 
 const _downloadedPacksPrefsKey = 'downloaded_pack_versions';
+const _dismissedPacksPrefsKey = 'dismissed_pack_versions';
 const _fetchTimeout = Duration(seconds: 5);
 
 /// Permite a los tests de widgets desactivar por completo las llamadas de
@@ -79,7 +80,10 @@ Future<List<PackMetadata>?> fetchRemoteIndex() async {
   }
 }
 
-Future<Map<String, int>> _getDownloadedPackVersions() async {
+/// Versiones de los packs ya descargados (packId → version), según lo
+/// registrado localmente. Público para que la pantalla de administración de
+/// packs pueda mostrar qué está descargado.
+Future<Map<String, int>> getDownloadedPackVersions() async {
   final prefs = await SharedPreferences.getInstance();
   final raw = prefs.getString(_downloadedPacksPrefsKey);
   if (raw == null) return {};
@@ -89,9 +93,31 @@ Future<Map<String, int>> _getDownloadedPackVersions() async {
 
 Future<void> _markPackDownloaded(String packId, int version) async {
   final prefs = await SharedPreferences.getInstance();
-  final current = await _getDownloadedPackVersions();
+  final current = await getDownloadedPackVersions();
   current[packId] = version;
   await prefs.setString(_downloadedPacksPrefsKey, jsonEncode(current));
+}
+
+Future<Map<String, int>> _getDismissedVersions() async {
+  final prefs = await SharedPreferences.getInstance();
+  final raw = prefs.getString(_dismissedPacksPrefsKey);
+  if (raw == null) return {};
+  final decoded = jsonDecode(raw) as Map<String, dynamic>;
+  return decoded.map((key, value) => MapEntry(key, value as int));
+}
+
+/// Marca los packs indicados como "ya vistos" en el diálogo de aviso, para
+/// que no se vuelvan a ofrecer ahí mientras no se publique una versión
+/// más nueva. No afecta a la pantalla de administración de packs, que
+/// siempre muestra el estado real de todos los packs disponibles.
+Future<void> dismissPacks(List<PackMetadata> packs) async {
+  if (packs.isEmpty) return;
+  final prefs = await SharedPreferences.getInstance();
+  final current = await _getDismissedVersions();
+  for (final pack in packs) {
+    current[pack.id] = pack.version;
+  }
+  await prefs.setString(_dismissedPacksPrefsKey, jsonEncode(current));
 }
 
 /// Compara el índice remoto contra los packs ya descargados y retorna
@@ -100,11 +126,25 @@ Future<List<PackMetadata>> checkForNewPacks() async {
   final remoteIndex = await fetchRemoteIndex();
   if (remoteIndex == null) return const [];
 
-  final downloadedVersions = await _getDownloadedPackVersions();
+  final downloadedVersions = await getDownloadedPackVersions();
   return remoteIndex.where((pack) {
     final downloadedVersion = downloadedVersions[pack.id];
     return downloadedVersion == null || downloadedVersion < pack.version;
   }).toList();
+}
+
+/// Igual que [checkForNewPacks], pero excluye los packs que el usuario ya
+/// descartó en el diálogo de aviso para esa misma versión. Pensada para el
+/// diálogo de `HomeScreen`; la pantalla de administración de packs debe usar
+/// [checkForNewPacks] directamente, ya que ahí sí interesa ver todo.
+Future<List<PackMetadata>> checkForNewUndismissedPacks() async {
+  final newPacks = await checkForNewPacks();
+  if (newPacks.isEmpty) return newPacks;
+
+  final dismissed = await _getDismissedVersions();
+  return newPacks
+      .where((pack) => dismissed[pack.id] != pack.version)
+      .toList();
 }
 
 /// Descarga el archivo de un pack y lo guarda en el directorio de documentos
@@ -134,4 +174,19 @@ Future<void> downloadPack(PackMetadata pack) async {
   await file.writeAsString(response.body);
 
   await _markPackDownloaded(pack.id, pack.version);
+}
+
+/// Borra el archivo local de un pack descargado y olvida su versión
+/// registrada, para que vuelva a ofrecerse como disponible para descargar.
+Future<void> deletePack(PackMetadata pack) async {
+  final documentsDir = await getApplicationDocumentsDirectory();
+  final file = File('${documentsDir.path}/$packsDirectoryName/${pack.file}');
+  if (await file.exists()) {
+    await file.delete();
+  }
+
+  final prefs = await SharedPreferences.getInstance();
+  final current = await getDownloadedPackVersions();
+  current.remove(pack.id);
+  await prefs.setString(_downloadedPacksPrefsKey, jsonEncode(current));
 }

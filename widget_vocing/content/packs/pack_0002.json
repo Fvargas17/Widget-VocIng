@@ -1,0 +1,82 @@
+[
+  {
+    "id": "pack_0002_0001",
+    "word": "AN EARLY BIRD",
+    "pronunciation": "an ór-li berd",
+    "description": "Someone who likes to wake up and start their day early.",
+    "translation": "Alguien a quien le gusta despertarse y empezar el día temprano.",
+    "example": "I'm an early bird, so I usually get most of my work done before noon."
+  },
+  {
+    "id": "pack_0002_0002",
+    "word": "A NIGHT OWL",
+    "pronunciation": "a náit aul",
+    "description": "Someone who prefers staying awake and being active late at night.",
+    "translation": "Alguien que prefiere quedarse despierto y activo hasta tarde por la noche.",
+    "example": "I'm a night owl, so I tend to be more productive in the evening."
+  },
+  {
+    "id": "pack_0002_0003",
+    "word": "TO RUN ON COFFEE",
+    "pronunciation": "tu ran on kó-fi",
+    "description": "To depend on coffee to have enough energy.",
+    "translation": "Depender del café para tener suficiente energía.",
+    "example": "I practically run on coffee when I have a busy week."
+  },
+  {
+    "id": "pack_0002_0004",
+    "word": "TO FIND A BALANCE",
+    "pronunciation": "tu fáind a bá-lans",
+    "description": "To manage two or more parts of your life successfully.",
+    "translation": "Manejar dos o más partes de tu vida con éxito.",
+    "example": "I'm trying to find a balance between my career and my personal life."
+  },
+  {
+    "id": "pack_0002_0005",
+    "word": "TO STICK TO SOMETHING",
+    "pronunciation": "tu stik tu sám-zing",
+    "description": "To continue doing something without giving up.",
+    "translation": "Seguir haciendo algo sin rendirte.",
+    "example": "It's difficult to stick to a routine when my schedule is unpredictable."
+  },
+  {
+    "id": "pack_0002_0006",
+    "word": "TO GET INTO A ROUTINE",
+    "pronunciation": "tu guet ín-tu a ru-tín",
+    "description": "To develop a regular pattern of doing things.",
+    "translation": "Desarrollar un patrón regular de hacer las cosas.",
+    "example": "It took me a few weeks to get into a routine after starting my new job."
+  },
+  {
+    "id": "pack_0002_0007",
+    "word": "TO BE SNOWED UNDER",
+    "pronunciation": "tu bi snóud án-dar",
+    "description": "To have far too much work to deal with.",
+    "translation": "Tener demasiado trabajo del que ocuparte.",
+    "example": "I've been snowed under with work lately."
+  },
+  {
+    "id": "pack_0002_0008",
+    "word": "TO MAKE THE MOST OF YOUR TIME",
+    "pronunciation": "tu méik de móust ov iór táim",
+    "description": "To use your available time effectively.",
+    "translation": "Aprovechar bien el tiempo disponible.",
+    "example": "I try to make the most of my mornings because that's when I'm most focused."
+  },
+  {
+    "id": "pack_0002_0009",
+    "word": "TO WIND DOWN",
+    "pronunciation": "tu uáind daun",
+    "description": "To gradually relax after being busy or stressed.",
+    "translation": "Relajarte poco a poco después de estar ocupado o estresado.",
+    "example": "I usually wind down by reading or listening to music before bed."
+  },
+  {
+    "id": "pack_0002_0010",
+    "word": "TO GET INTO THE SWING OF THINGS",
+    "pronunciation": "tu guet ín-tu de suíng ov zings",
+    "description": "To become comfortable and active in a new situation or routine.",
+    "translation": "Sentirte cómodo y activo en una nueva situación o rutina.",
+    "example": "It took me a few days to get into the swing of things after my vacation."
+  }
+]

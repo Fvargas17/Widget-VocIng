@@ -5,5 +5,12 @@
     "version": 1,
     "wordCount": 5,
     "file": "pack_0001.json"
+  },
+  {
+    "id": "pack_0002",
+    "name": "Rutina y energía diaria",
+    "version": 1,
+    "wordCount": 10,
+    "file": "pack_0002.json"
   }
 ]
