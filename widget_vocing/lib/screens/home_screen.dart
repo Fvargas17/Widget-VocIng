@@ -123,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: items == null
           ? null
           : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 FloatingActionButton(
                   heroTag: 'prev_word_fab',
@@ -131,6 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   tooltip: 'Palabra anterior',
                   child: const Icon(Icons.arrow_back),
                 ),
+                const SizedBox(width: 24),
                 FloatingActionButton(
                   heroTag: 'next_word_fab',
                   onPressed:
@@ -138,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ? null
                           : _showNextWord,
                   tooltip: 'Otra palabra',
-                  child: const Icon(Icons.refresh),
+                  child: const Icon(Icons.arrow_forward),
                 ),
               ],
             ),
@@ -159,18 +160,24 @@ class VocabularyCard extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              item.word,
-              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                item.word,
+                maxLines: 1,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
             ),
             const SizedBox(height: 4),
             Text(
               '/${item.pronunciation}/',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontStyle: FontStyle.italic,
-                color: Colors.grey,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 20),
