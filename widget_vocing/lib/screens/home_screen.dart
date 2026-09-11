@@ -110,9 +110,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 : Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      VocabularyCard(item: current),
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 250),
+                        transitionBuilder: (child, animation) => FadeTransition(
+                          opacity: animation,
+                          child: ScaleTransition(
+                            scale: Tween<double>(begin: 0.94, end: 1).animate(animation),
+                            child: child,
+                          ),
+                        ),
+                        child: VocabularyCard(
+                          key: ValueKey(current.id),
+                          item: current,
+                        ),
+                      ),
                       const SizedBox(height: 12),
-                      TextButton.icon(
+                      FilledButton.icon(
                         onPressed: _markCurrentAsLearned,
                         icon: const Icon(Icons.check_circle_outline),
                         label: const Text('Marcar como aprendida'),
@@ -120,6 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: items == null
           ? null
           : Row(

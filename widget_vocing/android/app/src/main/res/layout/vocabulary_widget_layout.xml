@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="12dp"
-    android:background="@android:color/white">
+    android:padding="16dp"
+    android:background="@drawable/widget_card_background">
 
     <TextView
         android:id="@+id/widget_word"
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"
+        android:textColor="#2B2B2B"
         android:gravity="center" />
 
     <TextView
@@ -23,7 +23,7 @@
         android:textSize="14sp"
         android:textStyle="italic"
         android:gravity="center"
-        android:textColor="#666666" />
+        android:textColor="#5C5C52" />
 
     <TextView
         android:id="@+id/widget_example"
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:textSize="13sp"
         android:gravity="center"
-        android:textColor="#333333"
+        android:textColor="#2B2B2B"
         android:layout_marginTop="6dp"
         android:maxLines="2"
         android:ellipsize="end" />
@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
         android:weightSum="3">
 
         <Button
@@ -48,23 +48,33 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/widget_button_background"
             android:text="◀"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/widget_btn_next"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/widget_button_background"
             android:text="▶"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/widget_btn_learned"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/widget_button_background"
             android:text="✓"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 </LinearLayout>

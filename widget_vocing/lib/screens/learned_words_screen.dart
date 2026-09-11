@@ -76,13 +76,15 @@ class _LearnedWordsScreenState extends State<LearnedWordsScreen> {
       itemCount: learnedItems.length,
       itemBuilder: (context, index) {
         final item = learnedItems[index];
-        return ListTile(
-          title: Text(item.word),
-          subtitle: Text(item.translation),
-          trailing: IconButton(
-            icon: const Icon(Icons.undo),
-            tooltip: 'Desmarcar',
-            onPressed: () => _unmark(item),
+        return Card(
+          child: ListTile(
+            title: Text(item.word),
+            subtitle: Text(item.translation),
+            trailing: IconButton(
+              icon: const Icon(Icons.undo),
+              tooltip: 'Desmarcar',
+              onPressed: () => _unmark(item),
+            ),
           ),
         );
       },
