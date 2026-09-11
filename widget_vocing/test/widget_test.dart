@@ -13,14 +13,20 @@ import 'package:widget_vocing/data/vocabulary_repository.dart'
     as vocabulary_repository;
 import 'package:widget_vocing/main.dart';
 import 'package:widget_vocing/services/pack_service.dart' as pack_service;
+import 'package:widget_vocing/services/vocabulary_state_service.dart'
+    as vocabulary_state_service;
 
 void main() {
   // Los tests no deben depender de red ni de I/O de archivos real (canales
   // de plataforma sin implementación real, y el reloj simulado de
   // flutter_test no puede esperar de forma fiable I/O real): se desactivan
-  // el chequeo de packs nuevos (HTTP) y la lectura de packs descargados.
+  // el chequeo de packs nuevos (HTTP), la lectura de packs descargados, y la
+  // sincronización con el widget nativo (su MethodChannel sin handler
+  // registrado en tests no lanza excepción de inmediato, sino que cuelga
+  // pumpAndSettle() indefinidamente).
   pack_service.debugDisableNetworkChecks = true;
   vocabulary_repository.debugSkipDownloadedPacks = true;
+  vocabulary_state_service.debugSkipWidgetSync = true;
   // HomeScreen consulta las palabras aprendidas vía shared_preferences en
   // initState; sin este mock, el canal de plataforma real nunca resuelve y
   // pumpAndSettle() queda esperando para siempre.

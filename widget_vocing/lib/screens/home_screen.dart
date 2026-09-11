@@ -1,16 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
-import '../data/vocabulary_repository.dart';
 import '../models/vocabulary_item.dart';
-import '../services/learned_words_service.dart';
 import '../services/pack_service.dart';
+import '../services/vocabulary_state_service.dart';
 import '../widgets/app_drawer.dart';
-
-/// Máximo de palabras previas que se recuerdan en memoria para el botón
-/// "atrás", para no dejar crecer el historial de forma indefinida.
-const _maxHistorySize = 10;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,30 +13,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _random = Random();
-  List<VocabularyItem>? _items;
-  Set<String> _learnedIds = {};
-  VocabularyItem? _currentItem;
-  final List<VocabularyItem> _history = [];
+  final _stateService = const VocabularyStateService();
+  VocabularyStateSnapshot? _snapshot;
 
-  List<VocabularyItem> get _activeItems =>
-      _items!.where((item) => !_learnedIds.contains(item.id)).toList();
+  List<VocabularyItem>? get _items => _snapshot?.items;
+  VocabularyItem? get _currentItem => _snapshot?.currentItem;
+  bool get _hasHistory => _snapshot?.historyIds.isNotEmpty ?? false;
+  List<VocabularyItem> get _activeItems => _snapshot?.activeItems ?? const [];
 
   @override
   void initState() {
     super.initState();
-    Future.wait([loadVocabulary(), getLearnedWordIds()]).then((results) {
-      final items = results[0] as List<VocabularyItem>;
-      final learnedIds = results[1] as Set<String>;
-      final active =
-          items.where((item) => !learnedIds.contains(item.id)).toList();
-      setState(() {
-        _items = items;
-        _learnedIds = learnedIds;
-        _currentItem = active.isEmpty
-            ? null
-            : active[_random.nextInt(active.length)];
-      });
+    _stateService.loadState().then((snapshot) {
+      if (!mounted) return;
+      setState(() => _snapshot = snapshot);
       _checkForNewPacks();
     });
   }
@@ -82,50 +65,27 @@ class _HomeScreenState extends State<HomeScreen> {
     await Navigator.of(context).pushNamed('/packs');
     if (!mounted) return;
 
-    final updatedItems = await loadVocabulary();
+    final refreshed = await _stateService.peekState();
     if (!mounted) return;
-    setState(() {
-      _items = updatedItems;
-    });
+    setState(() => _snapshot = refreshed);
   }
 
-  void _showNextWord() {
-    final active = _activeItems;
-    if (active.length <= 1) return;
-    var next = _currentItem;
-    while (next?.id == _currentItem?.id) {
-      next = active[_random.nextInt(active.length)];
-    }
-    setState(() {
-      final current = _currentItem;
-      if (current != null) {
-        _history.add(current);
-        if (_history.length > _maxHistorySize) {
-          _history.removeAt(0);
-        }
-      }
-      _currentItem = next;
-    });
+  Future<void> _showNextWord() async {
+    final snapshot = await _stateService.goToNextWord();
+    if (!mounted) return;
+    setState(() => _snapshot = snapshot);
   }
 
-  void _showPreviousWord() {
-    if (_history.isEmpty) return;
-    setState(() {
-      _currentItem = _history.removeLast();
-    });
+  Future<void> _showPreviousWord() async {
+    final snapshot = await _stateService.goToPreviousWord();
+    if (!mounted) return;
+    setState(() => _snapshot = snapshot);
   }
 
   Future<void> _markCurrentAsLearned() async {
-    final current = _currentItem;
-    if (current == null) return;
-    await markWordAsLearned(current.id);
+    final snapshot = await _stateService.markCurrentAsLearned();
     if (!mounted) return;
-    setState(() {
-      _learnedIds = {..._learnedIds, current.id};
-      final active = _activeItems;
-      _currentItem =
-          active.isEmpty ? null : active[_random.nextInt(active.length)];
-    });
+    setState(() => _snapshot = snapshot);
   }
 
   @override
@@ -167,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 FloatingActionButton(
                   heroTag: 'prev_word_fab',
-                  onPressed: _history.isEmpty ? null : _showPreviousWord,
+                  onPressed: _hasHistory ? _showPreviousWord : null,
                   tooltip: 'Palabra anterior',
                   child: const Icon(Icons.arrow_back),
                 ),

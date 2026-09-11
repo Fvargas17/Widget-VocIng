@@ -41,6 +41,9 @@ dependencies:
   path_provider: ^2.1.5
   # Registro de qué packs/versiones ya se descargaron.
   shared_preferences: ^2.3.3
+  # Widget de pantalla de inicio nativo (Android/iOS) sincronizado con el
+  # estado persistido de la app.
+  home_widget: ^0.7.0
 
 dependency_overrides:
   path_provider_foundation: 2.4.1
