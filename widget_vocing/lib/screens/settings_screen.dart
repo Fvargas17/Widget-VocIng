@@ -38,27 +38,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
       drawer: const AppDrawer(currentScreen: AppScreen.settings),
       body: selectedPresetId == null
           ? const Center(child: CircularProgressIndicator())
-          : RadioGroup<String>(
-              groupValue: selectedPresetId,
-              onChanged: (value) {
-                if (value != null) _selectPreset(value);
-              },
-              child: ListView(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Text(
-                      'Tema de la app',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          : ListView(
+              padding: const EdgeInsets.all(12),
+              children: [
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Tema de la app',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 4),
+                        DropdownButton<String>(
+                          value: selectedPresetId,
+                          isExpanded: true,
+                          underline: const SizedBox.shrink(),
+                          items: [
+                            for (final preset in appThemePresets)
+                              DropdownMenuItem(
+                                value: preset.id,
+                                child: Text(preset.displayName),
+                              ),
+                          ],
+                          onChanged: (value) {
+                            if (value != null) _selectPreset(value);
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                  for (final preset in appThemePresets)
-                    RadioListTile<String>(
-                      value: preset.id,
-                      title: Text(preset.displayName),
-                    ),
-                ],
-              ),
+                ),
+              ],
             ),
     );
   }
