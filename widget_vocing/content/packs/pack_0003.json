@@ -1,0 +1,226 @@
+[
+  {
+    "id": "pack_0003_0001",
+    "word": "TO WAKE UP",
+    "pronunciation": "tu uéik ap",
+    "description": "To stop sleeping and become conscious.",
+    "translation": "Despertarse.",
+    "example": "I usually wake up at six, even on weekends."
+  },
+  {
+    "id": "pack_0003_0002",
+    "word": "TO GET OUT OF BED",
+    "pronunciation": "tu guet áut ov bed",
+    "description": "To physically leave your bed after waking up.",
+    "translation": "Levantarse de la cama.",
+    "example": "I wake up early, but it takes me ten minutes to get out of bed."
+  },
+  {
+    "id": "pack_0003_0003",
+    "word": "TO HIT THE SNOOZE BUTTON",
+    "pronunciation": "tu jit de snus bá-ton",
+    "description": "To press the button that delays your alarm for a few more minutes.",
+    "translation": "Darle al botón de posponer la alarma.",
+    "example": "I hit the snooze button three times this morning."
+  },
+  {
+    "id": "pack_0003_0004",
+    "word": "TO GET READY",
+    "pronunciation": "tu guet ré-di",
+    "description": "To prepare yourself before going somewhere.",
+    "translation": "Arreglarse, prepararse.",
+    "example": "It takes me about twenty minutes to get ready for work."
+  },
+  {
+    "id": "pack_0003_0005",
+    "word": "TO FRESHEN UP",
+    "pronunciation": "tu fré-shen ap",
+    "description": "To quickly wash your face and hands to feel clean and awake.",
+    "translation": "Refrescarse, asearse rápidamente.",
+    "example": "Give me a minute to freshen up before we leave."
+  },
+  {
+    "id": "pack_0003_0006",
+    "word": "TO TAKE A SHOWER",
+    "pronunciation": "tu téik a sháu-er",
+    "description": "To wash your whole body under running water.",
+    "translation": "Bañarse, darse una ducha.",
+    "example": "I take a shower right after the gym."
+  },
+  {
+    "id": "pack_0003_0007",
+    "word": "TO GET DRESSED",
+    "pronunciation": "tu guet drest",
+    "description": "To put your clothes on.",
+    "translation": "Vestirse.",
+    "example": "I get dressed while my coffee is brewing."
+  },
+  {
+    "id": "pack_0003_0008",
+    "word": "TO GRAB A QUICK BREAKFAST",
+    "pronunciation": "tu grab a kuík brék-fast",
+    "description": "To eat something small and fast in the morning.",
+    "translation": "Desayunar algo rápido.",
+    "example": "I usually grab a quick breakfast before heading out."
+  },
+  {
+    "id": "pack_0003_0009",
+    "word": "TO MAKE COFFEE",
+    "pronunciation": "tu méik kó-fi",
+    "description": "To prepare coffee.",
+    "translation": "Preparar café.",
+    "example": "The first thing I do every morning is make coffee."
+  },
+  {
+    "id": "pack_0003_0010",
+    "word": "TO HEAD TO WORK",
+    "pronunciation": "tu jed tu uérk",
+    "description": "To start going in the direction of your workplace.",
+    "translation": "Dirigirse al trabajo.",
+    "example": "I head to work at around seven thirty."
+  },
+  {
+    "id": "pack_0003_0011",
+    "word": "TO COMMUTE TO WORK",
+    "pronunciation": "tu co-miút tu uérk",
+    "description": "To travel regularly between your home and your workplace.",
+    "translation": "Trasladarse al trabajo.",
+    "example": "I commute to work by car, and it takes about forty minutes."
+  },
+  {
+    "id": "pack_0003_0012",
+    "word": "TO RUN ERRANDS",
+    "pronunciation": "tu ran é-rands",
+    "description": "To go out to do small necessary tasks, like shopping or paying bills.",
+    "translation": "Hacer mandados o diligencias.",
+    "example": "I run errands on Saturday mornings so my Sunday stays free."
+  },
+  {
+    "id": "pack_0003_0013",
+    "word": "TO GET TO WORK",
+    "pronunciation": "tu guet tu uérk",
+    "description": "To arrive at your workplace.",
+    "translation": "Llegar al trabajo.",
+    "example": "I get to work around eight and start with my emails."
+  },
+  {
+    "id": "pack_0003_0014",
+    "word": "TO TAKE A BREAK",
+    "pronunciation": "tu téik a bréik",
+    "description": "To stop working for a short time to rest.",
+    "translation": "Tomar un descanso.",
+    "example": "I take a short break every couple of hours to clear my head."
+  },
+  {
+    "id": "pack_0003_0015",
+    "word": "TO GRAB SOME LUNCH",
+    "pronunciation": "tu grab sam lanch",
+    "description": "To quickly get something to eat at midday.",
+    "translation": "Ir por algo de comer al mediodía.",
+    "example": "Do you want to grab some lunch around one?"
+  },
+  {
+    "id": "pack_0003_0016",
+    "word": "TO WORK LATE",
+    "pronunciation": "tu uérk léit",
+    "description": "To keep working after your normal finishing time.",
+    "translation": "Quedarse trabajando hasta tarde.",
+    "example": "I had to work late because we were closing a release."
+  },
+  {
+    "id": "pack_0003_0017",
+    "word": "TO GET HOME",
+    "pronunciation": "tu guet jóum",
+    "description": "To arrive at your house.",
+    "translation": "Llegar a casa.",
+    "example": "I usually get home a little after six."
+  },
+  {
+    "id": "pack_0003_0018",
+    "word": "TO UNWIND",
+    "pronunciation": "tu an-uáind",
+    "description": "To stop feeling tense and start enjoying yourself.",
+    "translation": "Desestresarse, soltar la tensión.",
+    "example": "Playing games with my friends is how I unwind."
+  },
+  {
+    "id": "pack_0003_0019",
+    "word": "TO DO THE DISHES",
+    "pronunciation": "tu du de dí-shes",
+    "description": "To wash the plates, glasses and cutlery after a meal.",
+    "translation": "Lavar los trastes.",
+    "example": "I cook and my brother does the dishes."
+  },
+  {
+    "id": "pack_0003_0020",
+    "word": "TO TIDY UP",
+    "pronunciation": "tu tái-di ap",
+    "description": "To put things back in order so a place looks neat.",
+    "translation": "Ordenar, recoger.",
+    "example": "I tidy up a bit before going to bed."
+  },
+  {
+    "id": "pack_0003_0021",
+    "word": "TO CATCH UP ON",
+    "pronunciation": "tu katch ap on",
+    "description": "To do something you did not have time to do earlier.",
+    "translation": "Ponerse al día con algo.",
+    "example": "I use my weekends to catch up on sleep and messages."
+  },
+  {
+    "id": "pack_0003_0022",
+    "word": "TO SCROLL THROUGH MY PHONE",
+    "pronunciation": "tu scróul zru mai fóun",
+    "description": "To move through content on your phone without a clear purpose.",
+    "translation": "Estar pasando el dedo por el celular sin rumbo.",
+    "example": "I scroll through my phone way too much before bed."
+  },
+  {
+    "id": "pack_0003_0023",
+    "word": "TO CHECK MY NOTIFICATIONS",
+    "pronunciation": "tu chek mai nou-ti-fi-kéi-shons",
+    "description": "To look at the alerts your apps have sent you.",
+    "translation": "Revisar las notificaciones.",
+    "example": "I check my notifications once in the morning and once at night."
+  },
+  {
+    "id": "pack_0003_0024",
+    "word": "TO STAY UP LATE",
+    "pronunciation": "tu stéi ap léit",
+    "description": "To go to bed much later than usual.",
+    "translation": "Desvelarse, quedarse despierto hasta tarde.",
+    "example": "I stayed up late working on my personal project."
+  },
+  {
+    "id": "pack_0003_0025",
+    "word": "TO GO TO BED",
+    "pronunciation": "tu góu tu bed",
+    "description": "To get into bed in order to sleep.",
+    "translation": "Irse a dormir.",
+    "example": "I try to go to bed before eleven on weekdays."
+  },
+  {
+    "id": "pack_0003_0026",
+    "word": "TO GET A GOOD NIGHT'S SLEEP",
+    "pronunciation": "tu guet a gud náits slip",
+    "description": "To sleep well for a full night.",
+    "translation": "Dormir bien toda la noche.",
+    "example": "I think much better when I get a good night's sleep."
+  },
+  {
+    "id": "pack_0003_0027",
+    "word": "TO SLEEP IN",
+    "pronunciation": "tu slip in",
+    "description": "To sleep later than usual because you choose to.",
+    "translation": "Dormir hasta tarde por gusto.",
+    "example": "On Sundays I like to sleep in until ten."
+  },
+  {
+    "id": "pack_0003_0028",
+    "word": "TO HAVE A LIE-IN",
+    "pronunciation": "tu jav a lái-in",
+    "description": "British expression for staying in bed longer than usual in the morning.",
+    "translation": "Quedarse un rato más en la cama por la mañana.",
+    "example": "I'm having a lie-in tomorrow; I don't have to work."
+  }
+]

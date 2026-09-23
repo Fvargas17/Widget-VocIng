@@ -12,5 +12,19 @@
     "version": 1,
     "wordCount": 10,
     "file": "pack_0002.json"
+  },
+  {
+    "id": "pack_0003",
+    "name": "Rutina diaria paso a paso",
+    "version": 1,
+    "wordCount": 28,
+    "file": "pack_0003.json"
+  },
+  {
+    "id": "pack_0004",
+    "name": "Economía y actualidad",
+    "version": 1,
+    "wordCount": 7,
+    "file": "pack_0004.json"
   }
 ]

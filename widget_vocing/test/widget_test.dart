@@ -13,6 +13,7 @@ import 'package:widget_vocing/data/vocabulary_repository.dart'
     as vocabulary_repository;
 import 'package:widget_vocing/main.dart';
 import 'package:widget_vocing/services/pack_service.dart' as pack_service;
+import 'package:widget_vocing/services/sound_service.dart' as sound_service;
 import 'package:widget_vocing/services/vocabulary_state_service.dart'
     as vocabulary_state_service;
 
@@ -27,6 +28,9 @@ void main() {
   pack_service.debugDisableNetworkChecks = true;
   vocabulary_repository.debugSkipDownloadedPacks = true;
   vocabulary_state_service.debugSkipWidgetSync = true;
+  // Mismo motivo para el audio: el MethodChannel de audioplayers tampoco
+  // tiene handler en tests, y un `play()` sin resolver cuelga pumpAndSettle().
+  sound_service.debugDisableSounds = true;
   // HomeScreen consulta las palabras aprendidas vía shared_preferences en
   // initState; sin este mock, el canal de plataforma real nunca resuelve y
   // pumpAndSettle() queda esperando para siempre.

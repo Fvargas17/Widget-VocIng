@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../services/sound_service.dart';
 import '../services/theme_notifier.dart';
 import '../services/theme_service.dart';
 import '../theme/app_theme_preset.dart';
@@ -14,6 +15,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   String? _selectedPresetId;
+  bool _soundsEnabled = true;
 
   @override
   void initState() {
@@ -22,12 +24,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (!mounted) return;
       setState(() => _selectedPresetId = id);
     });
+    getSoundsEnabled().then((enabled) {
+      if (!mounted) return;
+      setState(() => _soundsEnabled = enabled);
+    });
   }
 
   Future<void> _selectPreset(String presetId) async {
     setState(() => _selectedPresetId = presetId);
     await setSelectedThemePresetId(presetId);
     selectedThemePresetIdNotifier.value = presetId;
+  }
+
+  Future<void> _toggleSounds(bool enabled) async {
+    setState(() => _soundsEnabled = enabled);
+    await setSoundsEnabled(enabled);
+    // Al encenderlos, un sonido de muestra confirma el cambio.
+    if (enabled) playAppSound(AppSound.favorite);
   }
 
   @override
@@ -68,6 +81,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           },
                         ),
                       ],
+                    ),
+                  ),
+                ),
+                Card(
+                  child: SwitchListTile(
+                    value: _soundsEnabled,
+                    onChanged: _toggleSounds,
+                    title: const Text('Efectos de sonido'),
+                    subtitle: const Text(
+                      'Sonidos al cambiar de palabra, marcarla como aprendida '
+                      'o agregarla a favoritos.',
                     ),
                   ),
                 ),

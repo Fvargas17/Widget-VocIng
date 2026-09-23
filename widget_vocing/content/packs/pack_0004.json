@@ -1,0 +1,58 @@
+[
+  {
+    "id": "pack_0004_0001",
+    "word": "CONTENTIOUS",
+    "pronunciation": "con-tén-shos",
+    "description": "Likely to cause disagreement or argument.",
+    "translation": "Polémico, controvertido.",
+    "example": "Remote work is still a contentious topic in many companies."
+  },
+  {
+    "id": "pack_0004_0002",
+    "word": "TO OUTPACE",
+    "pronunciation": "tu áut-peis",
+    "description": "To move or grow faster than someone or something else.",
+    "translation": "Superar en ritmo, crecer más rápido que.",
+    "example": "Demand for developers has outpaced the number of graduates."
+  },
+  {
+    "id": "pack_0004_0003",
+    "word": "RIVAL",
+    "pronunciation": "rái-val",
+    "description": "A person or company competing with another for the same thing.",
+    "translation": "Rival, competidor.",
+    "example": "Their main rival launched a similar product last month."
+  },
+  {
+    "id": "pack_0004_0004",
+    "word": "KNOWLEDGE ECONOMY",
+    "pronunciation": "ná-lich i-có-no-mi",
+    "description": "An economy based on skills, information and ideas rather than manufacturing.",
+    "translation": "Economía del conocimiento.",
+    "example": "In a knowledge economy, continuous learning matters more than seniority."
+  },
+  {
+    "id": "pack_0004_0005",
+    "word": "FINANCE",
+    "pronunciation": "fái-nans",
+    "description": "The management of money, or the money available to a person or company.",
+    "translation": "Finanzas; financiar.",
+    "example": "I'm trying to get my personal finances in order this year."
+  },
+  {
+    "id": "pack_0004_0006",
+    "word": "REGARDLESS",
+    "pronunciation": "ri-gárd-les",
+    "description": "Without being affected by something; anyway.",
+    "translation": "Sin importar, de todas formas.",
+    "example": "I'll apply for the job regardless of the salary they offer."
+  },
+  {
+    "id": "pack_0004_0007",
+    "word": "TO SEGREGATE",
+    "pronunciation": "tu sé-gri-gueit",
+    "description": "To separate one group of people or things from another.",
+    "translation": "Segregar, separar.",
+    "example": "The policy segregated workers by department instead of by project."
+  }
+]

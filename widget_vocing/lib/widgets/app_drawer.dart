@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Identifica qué pantalla del Drawer está activa, para resaltarla.
-enum AppScreen { home, packs, learned, settings }
+enum AppScreen { home, packs, learned, favorites, settings }
 
 /// Menú lateral compartido por las dos pantallas de la app. Usa rutas
 /// nombradas (declaradas en `MaterialApp`) en vez de referenciar los
@@ -40,6 +40,12 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Palabras aprendidas'),
             selected: currentScreen == AppScreen.learned,
             onTap: () => _navigateTo(context, AppScreen.learned, '/learned'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.star),
+            title: const Text('Palabras favoritas'),
+            selected: currentScreen == AppScreen.favorites,
+            onTap: () => _navigateTo(context, AppScreen.favorites, '/favorites'),
           ),
           ListTile(
             leading: const Icon(Icons.settings),

@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../models/vocabulary_item.dart';
+import '../services/favorites_service.dart';
 import '../services/pack_service.dart';
+import '../services/sound_service.dart';
 import '../services/vocabulary_state_service.dart';
 import '../widgets/app_drawer.dart';
 
@@ -17,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _stateService = const VocabularyStateService();
   VocabularyStateSnapshot? _snapshot;
+  Set<String> _favoriteIds = {};
   bool _showLearnedFeedback = false;
   Timer? _learnedFeedbackTimer;
 
@@ -38,6 +41,10 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!mounted) return;
       setState(() => _snapshot = snapshot);
       _checkForNewPacks();
+    });
+    getFavoriteWordIds().then((ids) {
+      if (!mounted) return;
+      setState(() => _favoriteIds = ids.toSet());
     });
   }
 
@@ -84,22 +91,40 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _showNextWord() async {
+    playAppSound(AppSound.navigate);
     final snapshot = await _stateService.goToNextWord();
     if (!mounted) return;
     setState(() => _snapshot = snapshot);
   }
 
   Future<void> _showPreviousWord() async {
+    playAppSound(AppSound.navigate);
     final snapshot = await _stateService.goToPreviousWord();
     if (!mounted) return;
     setState(() => _snapshot = snapshot);
   }
 
   Future<void> _markCurrentAsLearned() async {
+    playAppSound(AppSound.learned);
     final snapshot = await _stateService.markCurrentAsLearned();
     if (!mounted) return;
     setState(() => _snapshot = snapshot);
     _flashLearnedFeedback();
+  }
+
+  Future<void> _toggleFavorite() async {
+    final current = _currentItem;
+    if (current == null) return;
+    playAppSound(AppSound.favorite);
+    final isFavorite = await toggleFavoriteWord(current.id);
+    if (!mounted) return;
+    setState(() {
+      if (isFavorite) {
+        _favoriteIds.add(current.id);
+      } else {
+        _favoriteIds.remove(current.id);
+      }
+    });
   }
 
   void _flashLearnedFeedback() {
@@ -157,6 +182,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: VocabularyCard(
                               key: ValueKey(current.id),
                               item: current,
+                              isFavorite: _favoriteIds.contains(current.id),
+                              onToggleFavorite: _toggleFavorite,
                             ),
                           ),
                         ),
@@ -236,20 +263,55 @@ class LearnedFeedbackBadge extends StatelessWidget {
 }
 
 class VocabularyCard extends StatelessWidget {
-  const VocabularyCard({super.key, required this.item});
+  const VocabularyCard({
+    super.key,
+    required this.item,
+    this.isFavorite = false,
+    this.onToggleFavorite,
+  });
 
   final VocabularyItem item;
+  final bool isFavorite;
+
+  /// Si es `null`, la tarjeta se dibuja sin la estrella de favoritos.
+  final VoidCallback? onToggleFavorite;
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Card(
       margin: const EdgeInsets.all(24),
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        // El padding superior es menor que el resto porque la estrella ya
+        // aporta su propio margen visual arriba.
+        padding: EdgeInsets.fromLTRB(24, onToggleFavorite == null ? 24 : 8, 24, 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // La estrella ocupa su propia fila en vez de ir superpuesta en un
+            // `Stack`: así nunca tapa palabras largas, y no queda parcialmente
+            // fuera del área que recibe toques.
+            if (onToggleFavorite != null)
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  onPressed: onToggleFavorite,
+                  iconSize: 22,
+                  visualDensity: VisualDensity.compact,
+                  constraints: const BoxConstraints(),
+                  padding: const EdgeInsets.all(8),
+                  tooltip: isFavorite
+                      ? 'Quitar de favoritos'
+                      : 'Agregar a favoritos',
+                  icon: Icon(
+                    isFavorite ? Icons.star : Icons.star_border,
+                    color: isFavorite
+                        ? colorScheme.primary
+                        : colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
             FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
@@ -268,7 +330,7 @@ class VocabularyCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontStyle: FontStyle.italic,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color: colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 20),

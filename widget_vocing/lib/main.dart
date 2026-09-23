@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 
+import 'screens/favorites_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/learned_words_screen.dart';
 import 'screens/pack_management_screen.dart';
@@ -42,6 +43,7 @@ class WidgetVocIngApp extends StatelessWidget {
             '/': (_) => const HomeScreen(),
             '/packs': (_) => const PackManagementScreen(),
             '/learned': (_) => const LearnedWordsScreen(),
+            '/favorites': (_) => const FavoritesScreen(),
             '/settings': (_) => const SettingsScreen(),
           },
         );
