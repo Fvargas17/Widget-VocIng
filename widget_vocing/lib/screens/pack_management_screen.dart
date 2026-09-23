@@ -183,10 +183,12 @@ class _PackManagementScreenState extends State<PackManagementScreen> {
       );
     }
 
-    return ListTile(
-      title: Text(pack.name),
-      subtitle: Text(subtitle),
-      trailing: trailing,
+    return Card(
+      child: ListTile(
+        title: Text(pack.name),
+        subtitle: Text(subtitle),
+        trailing: trailing,
+      ),
     );
   }
 }
