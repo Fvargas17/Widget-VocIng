@@ -6,6 +6,8 @@ import 'screens/home_screen.dart';
 import 'screens/learned_words_screen.dart';
 import 'screens/pack_management_screen.dart';
 import 'screens/settings_screen.dart';
+import 'services/card_density_notifier.dart';
+import 'services/card_density_service.dart';
 import 'services/home_widget_callback.dart';
 import 'services/theme_notifier.dart';
 import 'services/theme_service.dart';
@@ -17,12 +19,18 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   HomeWidget.registerInteractivityCallback(backgroundCallback);
   _loadPersistedThemePreset();
+  _loadPersistedCardDensity();
   runApp(const WidgetVocIngApp());
 }
 
 Future<void> _loadPersistedThemePreset() async {
   final storedId = await getSelectedThemePresetId();
   selectedThemePresetIdNotifier.value = storedId;
+}
+
+Future<void> _loadPersistedCardDensity() async {
+  final storedDensity = await getCardDensity();
+  cardDensityNotifier.value = storedDensity;
 }
 
 class WidgetVocIngApp extends StatelessWidget {

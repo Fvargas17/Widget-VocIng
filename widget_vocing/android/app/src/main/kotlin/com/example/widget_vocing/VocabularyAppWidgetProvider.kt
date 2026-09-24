@@ -18,7 +18,13 @@ class VocabularyAppWidgetProvider : HomeWidgetProvider() {
         widgetData: SharedPreferences
     ) {
         appWidgetIds.forEach { widgetId ->
-            val views = RemoteViews(context.packageName, R.layout.vocabulary_widget_layout).apply {
+            val isCompact = widgetData.getBoolean("widget_compact_mode", false)
+            val layoutId = if (isCompact) {
+                R.layout.vocabulary_widget_layout_compact
+            } else {
+                R.layout.vocabulary_widget_layout
+            }
+            val views = RemoteViews(context.packageName, layoutId).apply {
                 val isEmpty = widgetData.getBoolean("widget_empty", true)
                 if (isEmpty) {
                     setTextViewText(R.id.widget_word, "¡Todo aprendido!")

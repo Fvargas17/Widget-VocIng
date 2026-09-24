@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/vocabulary_repository.dart';
 import '../models/vocabulary_item.dart';
+import 'card_density_service.dart';
 import 'learned_words_service.dart';
 
 const _currentIdPrefsKey = 'vocab_state_current_id';
@@ -88,6 +89,11 @@ class VocabularyStateService {
   }
 
   Future<VocabularyStateSnapshot> peekState() => loadState();
+
+  /// Empuja el modo compacto/grande actual al widget nativo. Se llama desde
+  /// `SettingsScreen` porque alternar la densidad no pasa por ningún otro
+  /// mutador de esta clase (no cambia la palabra actual ni el historial).
+  Future<void> syncWidgetCardDensity() => loadState();
 
   Future<VocabularyStateSnapshot> goToNextWord() async {
     final items = await loadVocabulary();
@@ -244,6 +250,10 @@ class VocabularyStateService {
       await HomeWidget.saveWidgetData<bool>(
         'widget_empty',
         current == null,
+      );
+      await HomeWidget.saveWidgetData<bool>(
+        'widget_compact_mode',
+        await getCardDensity() == CardDensity.compact,
       );
       await HomeWidget.updateWidget(
         androidName: _widgetAndroidName,

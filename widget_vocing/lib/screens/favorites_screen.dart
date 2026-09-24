@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../data/vocabulary_repository.dart';
 import '../models/vocabulary_item.dart';
+import '../services/card_density_notifier.dart';
+import '../services/card_density_service.dart';
 import '../services/favorites_service.dart';
 import '../services/sound_service.dart';
+import '../services/theme_notifier.dart';
+import '../theme/app_theme_preset.dart';
 import '../widgets/app_drawer.dart';
 import 'home_screen.dart' show VocabularyCard;
 
@@ -179,11 +183,18 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     child: child,
                   ),
                 ),
-                child: VocabularyCard(
-                  key: ValueKey(current.id),
-                  item: current,
-                  isFavorite: true,
-                  onToggleFavorite: _removeCurrentFromFavorites,
+                child: ValueListenableBuilder<CardDensity>(
+                  valueListenable: cardDensityNotifier,
+                  builder: (context, density, _) => VocabularyCard(
+                    key: ValueKey(current.id),
+                    item: current,
+                    isFavorite: true,
+                    onToggleFavorite: _removeCurrentFromFavorites,
+                    density: density,
+                    cardGradient: resolveThemePreset(
+                      selectedThemePresetIdNotifier.value,
+                    ).cardGradient,
+                  ),
                 ),
               ),
             ),

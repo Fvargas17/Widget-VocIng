@@ -12,6 +12,7 @@ class AppThemePreset {
     required this.id,
     required this.displayName,
     required this.themeData,
+    this.cardGradient,
   });
 
   /// Id persistido en `shared_preferences`.
@@ -21,6 +22,22 @@ class AppThemePreset {
   final String displayName;
 
   final ThemeData themeData;
+
+  /// Degradado sutil de `card` a `softAccent` que usa `VocabularyCard` en vez
+  /// de color plano. Vive aquí (no en `AppThemeRoles`) para no tocar el set
+  /// fijo de 7 colores semánticos: es un dato *derivado*, no un rol nuevo.
+  final Gradient? cardGradient;
+}
+
+/// Construye el degradado sutil de un preset a partir de sus propios
+/// [card]/[softAccent] — dos tonos que ya conviven en ese preset, así que el
+/// degradado nunca desentona con el resto de la paleta.
+LinearGradient _cardSkin(Color card, Color softAccent) {
+  return LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [card, softAccent],
+  );
 }
 
 /// Catálogo de presets disponibles, en el orden en que se listan en
@@ -42,6 +59,7 @@ final List<AppThemePreset> appThemePresets = [
         softAccent: Color(0xFFEAD9BB),
       ),
     ),
+    cardGradient: _cardSkin(const Color(0xFFEBD8C3), const Color(0xFFEAD9BB)),
   ),
   AppThemePreset(
     id: 'cafe_claro',
@@ -57,6 +75,7 @@ final List<AppThemePreset> appThemePresets = [
         softAccent: Color(0xFFE4D8C6),
       ),
     ),
+    cardGradient: _cardSkin(const Color(0xFFFFFDF8), const Color(0xFFE4D8C6)),
   ),
   AppThemePreset(
     id: 'terracota',
@@ -72,6 +91,7 @@ final List<AppThemePreset> appThemePresets = [
         softAccent: Color(0xFFE8D6C7),
       ),
     ),
+    cardGradient: _cardSkin(const Color(0xFFFFFCF7), const Color(0xFFE8D6C7)),
   ),
   AppThemePreset(
     id: 'cafe',
@@ -87,6 +107,7 @@ final List<AppThemePreset> appThemePresets = [
         softAccent: Color(0xFFDED2C7),
       ),
     ),
+    cardGradient: _cardSkin(const Color(0xFFFFFFFF), const Color(0xFFDED2C7)),
   ),
   AppThemePreset(
     id: 'azul_petroleo',
@@ -102,6 +123,7 @@ final List<AppThemePreset> appThemePresets = [
         softAccent: Color(0xFFD7E3DF),
       ),
     ),
+    cardGradient: _cardSkin(const Color(0xFFFFFFFF), const Color(0xFFD7E3DF)),
   ),
 ];
 
