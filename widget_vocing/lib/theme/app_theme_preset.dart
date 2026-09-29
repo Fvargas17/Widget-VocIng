@@ -11,6 +11,8 @@ class AppThemePreset {
   const AppThemePreset({
     required this.id,
     required this.displayName,
+    required this.roles,
+    required this.darkRoles,
     required this.themeData,
     required this.darkThemeData,
     this.cardGradient,
@@ -22,6 +24,16 @@ class AppThemePreset {
 
   /// Nombre visible en la pantalla de Configuración.
   final String displayName;
+
+  /// Los 7 roles crudos de la variante clara, antes de pasar por
+  /// [buildThemeFromRoles]. Se conservan aparte de [themeData] porque
+  /// consumidores fuera del árbol de widgets (el widget nativo de Android,
+  /// que no puede leer `Theme.of(context)`) necesitan los colores planos,
+  /// no un `ThemeData`.
+  final AppThemeRoles roles;
+
+  /// Equivalente a [roles] para la variante oscura.
+  final AppThemeRoles darkRoles;
 
   final ThemeData themeData;
 
@@ -51,169 +63,141 @@ LinearGradient _cardSkin(Color card, Color softAccent) {
   );
 }
 
+/// Arma un [AppThemePreset] completo a partir de sus roles claros/oscuros,
+/// derivando `themeData`/`darkThemeData`/`cardGradient`/`darkCardGradient`
+/// en un solo lugar — así el catálogo solo declara los 7+7 colores de cada
+/// preset, sin repetirlos.
+AppThemePreset _buildPreset({
+  required String id,
+  required String displayName,
+  required AppThemeRoles roles,
+  required AppThemeRoles darkRoles,
+}) {
+  return AppThemePreset(
+    id: id,
+    displayName: displayName,
+    roles: roles,
+    darkRoles: darkRoles,
+    themeData: buildThemeFromRoles(roles),
+    darkThemeData: buildThemeFromRoles(darkRoles, brightness: Brightness.dark),
+    cardGradient: _cardSkin(roles.card, roles.softAccent),
+    darkCardGradient: _cardSkin(darkRoles.card, darkRoles.softAccent),
+  );
+}
+
 /// Catálogo de presets disponibles, en el orden en que se listan en
 /// Configuración. Todos comparten el mismo verde salvia (`#8AA482`) como
 /// `primary`, salvo "Serene Wellness" (el original, con su propio verde más
 /// oscuro), y se diferencian por su color de acento/personalidad.
 final List<AppThemePreset> appThemePresets = [
-  AppThemePreset(
+  _buildPreset(
     id: 'serene_wellness',
     displayName: 'Serene Wellness',
-    themeData: buildThemeFromRoles(
-      const AppThemeRoles(
-        primary: Color(0xFF5C7A52),
-        accent: Color(0xFF8AA482),
-        background: Color(0xFF8AA482),
-        card: Color(0xFFEBD8C3),
-        text: Color(0xFF2B2B2B),
-        textSecondary: Color(0xFF5C5C52),
-        softAccent: Color(0xFFEAD9BB),
-      ),
+    roles: const AppThemeRoles(
+      primary: Color(0xFF5C7A52),
+      accent: Color(0xFF8AA482),
+      background: Color(0xFF8AA482),
+      card: Color(0xFFEBD8C3),
+      text: Color(0xFF2B2B2B),
+      textSecondary: Color(0xFF5C5C52),
+      softAccent: Color(0xFFEAD9BB),
     ),
-    cardGradient: _cardSkin(const Color(0xFFEBD8C3), const Color(0xFFEAD9BB)),
-    darkThemeData: buildThemeFromRoles(
-      const AppThemeRoles(
-        primary: Color(0xFF9DBB94),
-        accent: Color(0xFF3E5236),
-        background: Color(0xFF14180F),
-        card: Color(0xFF20281A),
-        text: Color(0xFFEDEBE3),
-        textSecondary: Color(0xFFB8B6A9),
-        softAccent: Color(0xFF33422C),
-      ),
-      brightness: Brightness.dark,
-    ),
-    darkCardGradient: _cardSkin(
-      const Color(0xFF20281A),
-      const Color(0xFF33422C),
+    darkRoles: const AppThemeRoles(
+      primary: Color(0xFF9DBB94),
+      accent: Color(0xFF3E5236),
+      background: Color(0xFF14180F),
+      card: Color(0xFF20281A),
+      text: Color(0xFFEDEBE3),
+      textSecondary: Color(0xFFB8B6A9),
+      softAccent: Color(0xFF33422C),
     ),
   ),
-  AppThemePreset(
+  _buildPreset(
     id: 'cafe_claro',
     displayName: 'Café claro',
-    themeData: buildThemeFromRoles(
-      const AppThemeRoles(
-        primary: Color(0xFF8AA482),
-        accent: Color(0xFFB89B7A),
-        background: Color(0xFFF5F1E8),
-        card: Color(0xFFFFFDF8),
-        text: Color(0xFF3D3A34),
-        textSecondary: Color(0xFF756F64),
-        softAccent: Color(0xFFE4D8C6),
-      ),
+    roles: const AppThemeRoles(
+      primary: Color(0xFF8AA482),
+      accent: Color(0xFFB89B7A),
+      background: Color(0xFFF5F1E8),
+      card: Color(0xFFFFFDF8),
+      text: Color(0xFF3D3A34),
+      textSecondary: Color(0xFF756F64),
+      softAccent: Color(0xFFE4D8C6),
     ),
-    cardGradient: _cardSkin(const Color(0xFFFFFDF8), const Color(0xFFE4D8C6)),
-    darkThemeData: buildThemeFromRoles(
-      const AppThemeRoles(
-        primary: Color(0xFF9DBB94),
-        accent: Color(0xFF4A3B2C),
-        background: Color(0xFF1C1815),
-        card: Color(0xFF272019),
-        text: Color(0xFFEDE7DD),
-        textSecondary: Color(0xFFB3A99B),
-        softAccent: Color(0xFF3A3024),
-      ),
-      brightness: Brightness.dark,
-    ),
-    darkCardGradient: _cardSkin(
-      const Color(0xFF272019),
-      const Color(0xFF3A3024),
+    darkRoles: const AppThemeRoles(
+      primary: Color(0xFF9DBB94),
+      accent: Color(0xFF4A3B2C),
+      background: Color(0xFF1C1815),
+      card: Color(0xFF272019),
+      text: Color(0xFFEDE7DD),
+      textSecondary: Color(0xFFB3A99B),
+      softAccent: Color(0xFF3A3024),
     ),
   ),
-  AppThemePreset(
+  _buildPreset(
     id: 'terracota',
     displayName: 'Terracota',
-    themeData: buildThemeFromRoles(
-      const AppThemeRoles(
-        primary: Color(0xFF8AA482),
-        accent: Color(0xFFB8755D),
-        background: Color(0xFFF7F1E8),
-        card: Color(0xFFFFFCF7),
-        text: Color(0xFF39352F),
-        textSecondary: Color(0xFF756D63),
-        softAccent: Color(0xFFE8D6C7),
-      ),
+    roles: const AppThemeRoles(
+      primary: Color(0xFF8AA482),
+      accent: Color(0xFFB8755D),
+      background: Color(0xFFF7F1E8),
+      card: Color(0xFFFFFCF7),
+      text: Color(0xFF39352F),
+      textSecondary: Color(0xFF756D63),
+      softAccent: Color(0xFFE8D6C7),
     ),
-    cardGradient: _cardSkin(const Color(0xFFFFFCF7), const Color(0xFFE8D6C7)),
-    darkThemeData: buildThemeFromRoles(
-      const AppThemeRoles(
-        primary: Color(0xFF9DBB94),
-        accent: Color(0xFF5C3226),
-        background: Color(0xFF1B1512),
-        card: Color(0xFF261C17),
-        text: Color(0xFFEFE6DD),
-        textSecondary: Color(0xFFB8A99C),
-        softAccent: Color(0xFF452A20),
-      ),
-      brightness: Brightness.dark,
-    ),
-    darkCardGradient: _cardSkin(
-      const Color(0xFF261C17),
-      const Color(0xFF452A20),
+    darkRoles: const AppThemeRoles(
+      primary: Color(0xFF9DBB94),
+      accent: Color(0xFF5C3226),
+      background: Color(0xFF1B1512),
+      card: Color(0xFF261C17),
+      text: Color(0xFFEFE6DD),
+      textSecondary: Color(0xFFB8A99C),
+      softAccent: Color(0xFF452A20),
     ),
   ),
-  AppThemePreset(
+  _buildPreset(
     id: 'cafe',
     displayName: 'Café',
-    themeData: buildThemeFromRoles(
-      const AppThemeRoles(
-        primary: Color(0xFF8AA482),
-        accent: Color(0xFF7A5C48),
-        background: Color(0xFFF3EFE8),
-        card: Color(0xFFFFFFFF),
-        text: Color(0xFF302A25),
-        textSecondary: Color(0xFF756A61),
-        softAccent: Color(0xFFDED2C7),
-      ),
+    roles: const AppThemeRoles(
+      primary: Color(0xFF8AA482),
+      accent: Color(0xFF7A5C48),
+      background: Color(0xFFF3EFE8),
+      card: Color(0xFFFFFFFF),
+      text: Color(0xFF302A25),
+      textSecondary: Color(0xFF756A61),
+      softAccent: Color(0xFFDED2C7),
     ),
-    cardGradient: _cardSkin(const Color(0xFFFFFFFF), const Color(0xFFDED2C7)),
-    darkThemeData: buildThemeFromRoles(
-      const AppThemeRoles(
-        primary: Color(0xFF9DBB94),
-        accent: Color(0xFF3D2E22),
-        background: Color(0xFF17130F),
-        card: Color(0xFF221B15),
-        text: Color(0xFFECE4DA),
-        textSecondary: Color(0xFFB2A89C),
-        softAccent: Color(0xFF362B20),
-      ),
-      brightness: Brightness.dark,
-    ),
-    darkCardGradient: _cardSkin(
-      const Color(0xFF221B15),
-      const Color(0xFF362B20),
+    darkRoles: const AppThemeRoles(
+      primary: Color(0xFF9DBB94),
+      accent: Color(0xFF3D2E22),
+      background: Color(0xFF17130F),
+      card: Color(0xFF221B15),
+      text: Color(0xFFECE4DA),
+      textSecondary: Color(0xFFB2A89C),
+      softAccent: Color(0xFF362B20),
     ),
   ),
-  AppThemePreset(
+  _buildPreset(
     id: 'azul_petroleo',
     displayName: 'Azul petróleo',
-    themeData: buildThemeFromRoles(
-      const AppThemeRoles(
-        primary: Color(0xFF8AA482),
-        accent: Color(0xFF42666A),
-        background: Color(0xFFF2F5F2),
-        card: Color(0xFFFFFFFF),
-        text: Color(0xFF26302E),
-        textSecondary: Color(0xFF687471),
-        softAccent: Color(0xFFD7E3DF),
-      ),
+    roles: const AppThemeRoles(
+      primary: Color(0xFF8AA482),
+      accent: Color(0xFF42666A),
+      background: Color(0xFFF2F5F2),
+      card: Color(0xFFFFFFFF),
+      text: Color(0xFF26302E),
+      textSecondary: Color(0xFF687471),
+      softAccent: Color(0xFFD7E3DF),
     ),
-    cardGradient: _cardSkin(const Color(0xFFFFFFFF), const Color(0xFFD7E3DF)),
-    darkThemeData: buildThemeFromRoles(
-      const AppThemeRoles(
-        primary: Color(0xFF9DBB94),
-        accent: Color(0xFF1F3335),
-        background: Color(0xFF10181A),
-        card: Color(0xFF1B2427),
-        text: Color(0xFFE4ECEB),
-        textSecondary: Color(0xFFA9B8B6),
-        softAccent: Color(0xFF253A3C),
-      ),
-      brightness: Brightness.dark,
-    ),
-    darkCardGradient: _cardSkin(
-      const Color(0xFF1B2427),
-      const Color(0xFF253A3C),
+    darkRoles: const AppThemeRoles(
+      primary: Color(0xFF9DBB94),
+      accent: Color(0xFF1F3335),
+      background: Color(0xFF10181A),
+      card: Color(0xFF1B2427),
+      text: Color(0xFFE4ECEB),
+      textSecondary: Color(0xFFA9B8B6),
+      softAccent: Color(0xFF253A3C),
     ),
   ),
 ];
@@ -236,4 +220,13 @@ AppThemePreset resolveThemePreset(String id) {
 Gradient? resolveActiveCardGradient(String presetId, bool darkModeEnabled) {
   final preset = resolveThemePreset(presetId);
   return darkModeEnabled ? preset.darkCardGradient : preset.cardGradient;
+}
+
+/// `roles` o `darkRoles` del preset [presetId] según [darkModeEnabled] — los
+/// mismos 7 colores planos que arman su `ThemeData`, para consumidores que no
+/// pueden leer `Theme.of(context)` (el widget nativo de Android, vía
+/// `VocabularyStateService`).
+AppThemeRoles resolveActiveThemeRoles(String presetId, bool darkModeEnabled) {
+  final preset = resolveThemePreset(presetId);
+  return darkModeEnabled ? preset.darkRoles : preset.roles;
 }

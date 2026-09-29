@@ -7,34 +7,49 @@
     android:padding="10dp"
     android:background="@drawable/widget_card_background">
 
-    <TextView
-        android:id="@+id/widget_word"
+    <!-- Mismo truco que en el layout normal: este bloque absorbe toda la
+         altura sobrante (`0dp` + weight) para que la fila de botones no se
+         mueva sin importar cuánto texto haya. -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:textColor="#2B2B2B"
-        android:gravity="center" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/widget_pronunciation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="11sp"
-        android:textStyle="italic"
-        android:gravity="center"
-        android:textColor="#5C5C52" />
+        <TextView
+            android:id="@+id/widget_word"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#2B2B2B"
+            android:gravity="center"
+            android:maxLines="1"
+            android:ellipsize="end" />
 
-    <TextView
-        android:id="@+id/widget_example"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="10sp"
-        android:gravity="center"
-        android:textColor="#2B2B2B"
-        android:layout_marginTop="3dp"
-        android:maxLines="1"
-        android:ellipsize="end" />
+        <TextView
+            android:id="@+id/widget_pronunciation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:textStyle="italic"
+            android:gravity="center"
+            android:textColor="#5C5C52"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/widget_example"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:textColor="#2B2B2B"
+            android:layout_marginTop="3dp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

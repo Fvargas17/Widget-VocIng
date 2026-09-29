@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Fondo del widget nativo, a juego con el color de Card del preset de
-     tema "Serene Wellness" (#EBD8C3) usado por defecto en la app Flutter. -->
+<!-- Forma base del fondo del widget: el color aquí es solo un placeholder,
+     `VocabularyAppWidgetProvider.tintBackground()` lo sustituye en runtime
+     por el rol `card` del preset de tema activo (vía `setBackgroundTintList`
+     en API 31+, o reemplazando el fondo entero en versiones anteriores). -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <solid android:color="#EBD8C3" />

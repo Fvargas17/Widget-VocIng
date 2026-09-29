@@ -49,12 +49,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() => _selectedPresetId = presetId);
     await setSelectedThemePresetId(presetId);
     selectedThemePresetIdNotifier.value = presetId;
+    await const VocabularyStateService().syncWidgetAppearance();
   }
 
   Future<void> _toggleDarkMode(bool enabled) async {
     setState(() => _darkModeEnabled = enabled);
     await setDarkModeEnabled(enabled);
     darkModeNotifier.value = enabled;
+    await const VocabularyStateService().syncWidgetAppearance();
   }
 
   Future<void> _toggleSounds(bool enabled) async {
@@ -72,7 +74,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // El widget nativo no escucha este notifier (vive en otro proceso): hay
     // que empujarle el cambio explícitamente, ya que alternar la densidad no
     // pasa por ningún mutador de VocabularyStateService.
-    await const VocabularyStateService().syncWidgetCardDensity();
+    await const VocabularyStateService().syncWidgetAppearance();
   }
 
   @override

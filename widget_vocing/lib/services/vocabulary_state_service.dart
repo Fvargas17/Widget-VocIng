@@ -1,13 +1,17 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/painting.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/vocabulary_repository.dart';
 import '../models/vocabulary_item.dart';
+import '../theme/app_theme_preset.dart';
 import 'card_density_service.dart';
+import 'dark_mode_service.dart';
 import 'learned_words_service.dart';
+import 'theme_service.dart';
 
 const _currentIdPrefsKey = 'vocab_state_current_id';
 const _historyIdsPrefsKey = 'vocab_state_history_ids';
@@ -50,20 +54,28 @@ class VocabularyStateSnapshot {
 /// Única fuente de verdad de "cuál es la palabra actual" y "cuál es el
 /// historial de navegación", persistida en `SharedPreferences` para que
 /// tanto `HomeScreen` como el callback en background del widget nativo de
-/// Android (que corre en un isolate headless nuevo en cada interacción)
-/// compartan exactamente el mismo estado y comportamiento.
+/// Android compartan exactamente el mismo estado y comportamiento.
 ///
 /// Ningún método cachea nada en memoria de instancia: cada llamada recarga
 /// el catálogo (`loadVocabulary`) y las palabras aprendidas
-/// (`getLearnedWordIds`) desde cero, porque el callback nativo no puede
-/// depender de estado en memoria de una ejecución anterior.
+/// (`getLearnedWordIds`) desde cero. **Ojo:** el isolate headless que
+/// `home_widget` usa para los botones del widget NO es nuevo en cada toque
+/// — `HomeWidgetBackgroundService.kt` guarda el `FlutterEngine` en un
+/// `companion object` y lo reutiliza mientras el proceso siga vivo. Como el
+/// paquete `shared_preferences` cachea todas las claves en memoria la
+/// primera vez que se llama `getInstance()` **por isolate** (`_completer`
+/// estático en `shared_preferences_legacy.dart`), ese isolate reutilizado
+/// nunca se enteraba de cambios hechos por la app en primer plano (ej.
+/// cambiar el preset de tema en Configuración): seguía viendo el snapshot
+/// de la primera vez que se calentó. Por eso `_freshPrefs()` llama
+/// `reload()` antes de leer nada.
 class VocabularyStateService {
   const VocabularyStateService();
 
   Future<VocabularyStateSnapshot> loadState() async {
+    final prefs = await _freshPrefs();
     final items = await loadVocabulary();
     final learnedIds = await getLearnedWordIds();
-    final prefs = await SharedPreferences.getInstance();
     final historyIds = _readHistory(prefs);
 
     final active =
@@ -90,15 +102,16 @@ class VocabularyStateService {
 
   Future<VocabularyStateSnapshot> peekState() => loadState();
 
-  /// Empuja el modo compacto/grande actual al widget nativo. Se llama desde
-  /// `SettingsScreen` porque alternar la densidad no pasa por ningún otro
-  /// mutador de esta clase (no cambia la palabra actual ni el historial).
-  Future<void> syncWidgetCardDensity() => loadState();
+  /// Empuja al widget nativo la densidad y los colores de tema actuales.
+  /// Se llama desde `SettingsScreen` al tocar cualquiera de esos ajustes,
+  /// porque ninguno pasa por otro mutador de esta clase (no cambian la
+  /// palabra actual ni el historial).
+  Future<void> syncWidgetAppearance() => loadState();
 
   Future<VocabularyStateSnapshot> goToNextWord() async {
+    final prefs = await _freshPrefs();
     final items = await loadVocabulary();
     final learnedIds = await getLearnedWordIds();
-    final prefs = await SharedPreferences.getInstance();
     final active =
         items.where((item) => !learnedIds.contains(item.id)).toList();
 
@@ -144,9 +157,9 @@ class VocabularyStateService {
   }
 
   Future<VocabularyStateSnapshot> goToPreviousWord() async {
+    final prefs = await _freshPrefs();
     final items = await loadVocabulary();
     final learnedIds = await getLearnedWordIds();
-    final prefs = await SharedPreferences.getInstance();
 
     final active =
         items.where((item) => !learnedIds.contains(item.id)).toList();
@@ -179,7 +192,7 @@ class VocabularyStateService {
   }
 
   Future<VocabularyStateSnapshot> markCurrentAsLearned() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await _freshPrefs();
     final currentId = prefs.getString(_currentIdPrefsKey);
     if (currentId == null) return loadState();
 
@@ -201,6 +214,15 @@ class VocabularyStateService {
     );
     await _syncWidget(snapshot);
     return snapshot;
+  }
+
+  /// `SharedPreferences.getInstance()` + `reload()`: ver el comentario de
+  /// la clase — sin el `reload()`, el isolate headless del widget reutiliza
+  /// para siempre el snapshot de la primera vez que se calentó.
+  Future<SharedPreferences> _freshPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
+    return prefs;
   }
 
   VocabularyItem? _findActive(List<VocabularyItem> active, String id) {
@@ -255,6 +277,25 @@ class VocabularyStateService {
         'widget_compact_mode',
         await getCardDensity() == CardDensity.compact,
       );
+      final presetId = await getSelectedThemePresetId();
+      final darkModeEnabled = await getDarkModeEnabled();
+      final roles = resolveActiveThemeRoles(presetId, darkModeEnabled);
+      await HomeWidget.saveWidgetData<String>(
+        'widget_color_card',
+        _colorToHex(roles.card),
+      );
+      await HomeWidget.saveWidgetData<String>(
+        'widget_color_button',
+        _colorToHex(roles.primary),
+      );
+      await HomeWidget.saveWidgetData<String>(
+        'widget_color_text',
+        _colorToHex(roles.text),
+      );
+      await HomeWidget.saveWidgetData<String>(
+        'widget_color_text_secondary',
+        _colorToHex(roles.textSecondary),
+      );
       await HomeWidget.updateWidget(
         androidName: _widgetAndroidName,
         qualifiedAndroidName: _widgetQualifiedAndroidName,
@@ -264,4 +305,15 @@ class VocabularyStateService {
       // al home screen: no hay nada que sincronizar, se ignora en silencio.
     }
   }
+
+  /// `#AARRGGBB`, el mismo formato que entiende `android.graphics.Color.
+  /// parseColor()`. Se manda como `String` en vez de `int`: los colores con
+  /// canal alfa (`0xFF......`) superan el rango de un `Int32` con signo, así
+  /// que el codec de Flutter los serializa como `Long` del lado de Kotlin —
+  /// pero `HomeWidgetPlugin` los guarda con el tipo que llega por el canal
+  /// (`putInt` o `putLong` según el caso), y leerlos siempre con `getInt()`
+  /// revienta con `ClassCastException` cuando terminaron como `Long`. Un
+  /// string hexadecimal no tiene esa ambigüedad de tipo.
+  String _colorToHex(Color color) =>
+      '#${color.toARGB32().toRadixString(16).padLeft(8, '0').toUpperCase()}';
 }
