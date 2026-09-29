@@ -12,7 +12,9 @@ class AppThemePreset {
     required this.id,
     required this.displayName,
     required this.themeData,
+    required this.darkThemeData,
     this.cardGradient,
+    this.darkCardGradient,
   });
 
   /// Id persistido en `shared_preferences`.
@@ -23,10 +25,19 @@ class AppThemePreset {
 
   final ThemeData themeData;
 
+  /// Variante oscura del mismo preset — misma identidad de color (primary/
+  /// accent), pero fondo/card/texto invertidos para "Modo oscuro" en
+  /// Configuración. Se activa con `darkModeNotifier`, independiente del
+  /// preset elegido.
+  final ThemeData darkThemeData;
+
   /// Degradado sutil de `card` a `softAccent` que usa `VocabularyCard` en vez
   /// de color plano. Vive aquí (no en `AppThemeRoles`) para no tocar el set
   /// fijo de 7 colores semánticos: es un dato *derivado*, no un rol nuevo.
   final Gradient? cardGradient;
+
+  /// Equivalente a [cardGradient] para la variante oscura.
+  final Gradient? darkCardGradient;
 }
 
 /// Construye el degradado sutil de un preset a partir de sus propios
@@ -60,6 +71,22 @@ final List<AppThemePreset> appThemePresets = [
       ),
     ),
     cardGradient: _cardSkin(const Color(0xFFEBD8C3), const Color(0xFFEAD9BB)),
+    darkThemeData: buildThemeFromRoles(
+      const AppThemeRoles(
+        primary: Color(0xFF9DBB94),
+        accent: Color(0xFF3E5236),
+        background: Color(0xFF14180F),
+        card: Color(0xFF20281A),
+        text: Color(0xFFEDEBE3),
+        textSecondary: Color(0xFFB8B6A9),
+        softAccent: Color(0xFF33422C),
+      ),
+      brightness: Brightness.dark,
+    ),
+    darkCardGradient: _cardSkin(
+      const Color(0xFF20281A),
+      const Color(0xFF33422C),
+    ),
   ),
   AppThemePreset(
     id: 'cafe_claro',
@@ -76,6 +103,22 @@ final List<AppThemePreset> appThemePresets = [
       ),
     ),
     cardGradient: _cardSkin(const Color(0xFFFFFDF8), const Color(0xFFE4D8C6)),
+    darkThemeData: buildThemeFromRoles(
+      const AppThemeRoles(
+        primary: Color(0xFF9DBB94),
+        accent: Color(0xFF4A3B2C),
+        background: Color(0xFF1C1815),
+        card: Color(0xFF272019),
+        text: Color(0xFFEDE7DD),
+        textSecondary: Color(0xFFB3A99B),
+        softAccent: Color(0xFF3A3024),
+      ),
+      brightness: Brightness.dark,
+    ),
+    darkCardGradient: _cardSkin(
+      const Color(0xFF272019),
+      const Color(0xFF3A3024),
+    ),
   ),
   AppThemePreset(
     id: 'terracota',
@@ -92,6 +135,22 @@ final List<AppThemePreset> appThemePresets = [
       ),
     ),
     cardGradient: _cardSkin(const Color(0xFFFFFCF7), const Color(0xFFE8D6C7)),
+    darkThemeData: buildThemeFromRoles(
+      const AppThemeRoles(
+        primary: Color(0xFF9DBB94),
+        accent: Color(0xFF5C3226),
+        background: Color(0xFF1B1512),
+        card: Color(0xFF261C17),
+        text: Color(0xFFEFE6DD),
+        textSecondary: Color(0xFFB8A99C),
+        softAccent: Color(0xFF452A20),
+      ),
+      brightness: Brightness.dark,
+    ),
+    darkCardGradient: _cardSkin(
+      const Color(0xFF261C17),
+      const Color(0xFF452A20),
+    ),
   ),
   AppThemePreset(
     id: 'cafe',
@@ -108,6 +167,22 @@ final List<AppThemePreset> appThemePresets = [
       ),
     ),
     cardGradient: _cardSkin(const Color(0xFFFFFFFF), const Color(0xFFDED2C7)),
+    darkThemeData: buildThemeFromRoles(
+      const AppThemeRoles(
+        primary: Color(0xFF9DBB94),
+        accent: Color(0xFF3D2E22),
+        background: Color(0xFF17130F),
+        card: Color(0xFF221B15),
+        text: Color(0xFFECE4DA),
+        textSecondary: Color(0xFFB2A89C),
+        softAccent: Color(0xFF362B20),
+      ),
+      brightness: Brightness.dark,
+    ),
+    darkCardGradient: _cardSkin(
+      const Color(0xFF221B15),
+      const Color(0xFF362B20),
+    ),
   ),
   AppThemePreset(
     id: 'azul_petroleo',
@@ -124,6 +199,22 @@ final List<AppThemePreset> appThemePresets = [
       ),
     ),
     cardGradient: _cardSkin(const Color(0xFFFFFFFF), const Color(0xFFD7E3DF)),
+    darkThemeData: buildThemeFromRoles(
+      const AppThemeRoles(
+        primary: Color(0xFF9DBB94),
+        accent: Color(0xFF1F3335),
+        background: Color(0xFF10181A),
+        card: Color(0xFF1B2427),
+        text: Color(0xFFE4ECEB),
+        textSecondary: Color(0xFFA9B8B6),
+        softAccent: Color(0xFF253A3C),
+      ),
+      brightness: Brightness.dark,
+    ),
+    darkCardGradient: _cardSkin(
+      const Color(0xFF1B2427),
+      const Color(0xFF253A3C),
+    ),
   ),
 ];
 
@@ -136,4 +227,13 @@ AppThemePreset resolveThemePreset(String id) {
     (preset) => preset.id == id,
     orElse: () => appThemePresets.first,
   );
+}
+
+/// `cardGradient` o `darkCardGradient` del preset [presetId] según
+/// [darkModeEnabled] — la misma elección que hace `WidgetVocIngApp` para el
+/// `ThemeData`, pero para el degradado que `VocabularyCard` no puede leer
+/// desde `Theme.of(context)`.
+Gradient? resolveActiveCardGradient(String presetId, bool darkModeEnabled) {
+  final preset = resolveThemePreset(presetId);
+  return darkModeEnabled ? preset.darkCardGradient : preset.cardGradient;
 }

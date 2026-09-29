@@ -4,6 +4,7 @@ import '../data/vocabulary_repository.dart';
 import '../models/vocabulary_item.dart';
 import '../services/card_density_notifier.dart';
 import '../services/card_density_service.dart';
+import '../services/dark_mode_notifier.dart';
 import '../services/favorites_service.dart';
 import '../services/sound_service.dart';
 import '../services/theme_notifier.dart';
@@ -191,9 +192,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     isFavorite: true,
                     onToggleFavorite: _removeCurrentFromFavorites,
                     density: density,
-                    cardGradient: resolveThemePreset(
+                    cardGradient: resolveActiveCardGradient(
                       selectedThemePresetIdNotifier.value,
-                    ).cardGradient,
+                      darkModeNotifier.value,
+                    ),
                   ),
                 ),
               ),

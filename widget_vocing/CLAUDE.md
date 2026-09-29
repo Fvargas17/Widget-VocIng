@@ -63,12 +63,13 @@ Los tres WAV de `assets/sounds/` se **sintetizan** con `tool/generate_sounds.py`
 ### Sistema de temas (`lib/theme/`)
 
 - `app_theme_roles.dart` — `AppThemeRoles`, el set fijo de 7 colores semánticos que rellena cada preset (`primary`, `accent`, `background`, `card`, `text`, `textSecondary`, `softAccent`). Mantener esta lista corta y estable es lo que permite sumar presets sin tocar nada más.
-- `app_theme_builder.dart` — `buildThemeFromRoles()`, **única** función que traduce esos 7 colores a un `ThemeData` Material 3 completo (bordes muy redondeados: 24 en Cards, 20 en FAB/diálogos). No hay lógica de theming duplicada.
-- `app_theme_preset.dart` — `AppThemePreset` + el catálogo `appThemePresets` (5 presets: "Serene Wellness" por defecto + 4 variantes claras). `resolveThemePreset(id)` cae al primero si el id guardado ya no existe. Agregar un preset = sumar una entrada. Cada preset también trae un `cardGradient` opcional (`LinearGradient` de `card` a `softAccent`, generado con `_cardSkin()`) que consume `VocabularyCard`; vive en `AppThemePreset` y no en `AppThemeRoles` para no tocar el set fijo de 7 colores.
-- `lib/services/theme_notifier.dart` — `selectedThemePresetIdNotifier`, la única pieza de estado reactivo global. Vive aparte de `main.dart` para evitar un import circular con `settings_screen.dart`.
+- `app_theme_builder.dart` — `buildThemeFromRoles()`, **única** función que traduce esos 7 colores a un `ThemeData` Material 3 completo (bordes muy redondeados: 24 en Cards, 20 en FAB/diálogos). No hay lógica de theming duplicada. Recibe `brightness` (`Brightness.light` por defecto): con `Brightness.dark` arma el `ColorScheme` con `ColorScheme.dark(...)` en vez de `.light(...)` y usa `ThemeData.dark().textTheme` como base — el resto de la función es idéntico, así que la variante oscura de un preset no duplica lógica, solo le pasa otros 7 colores.
+- `app_theme_preset.dart` — `AppThemePreset` + el catálogo `appThemePresets` (5 presets: "Serene Wellness" por defecto + 4 variantes claras). `resolveThemePreset(id)` cae al primero si el id guardado ya no existe. Cada preset trae **cuatro** campos derivados de sus roles: `themeData`/`darkThemeData` (uno por `Brightness`, ambos vía `buildThemeFromRoles`) y `cardGradient`/`darkCardGradient` (`LinearGradient` de `card` a `softAccent`, generado con `_cardSkin()`) que consume `VocabularyCard`; viven en `AppThemePreset` y no en `AppThemeRoles` para no tocar el set fijo de 7 colores. Agregar un preset = sumar una entrada con sus roles claros y oscuros. `resolveActiveCardGradient(presetId, darkModeEnabled)` es el helper que `HomeScreen`/`FavoritesScreen` usan para elegir entre ambos gradientes sin repetir el `if`.
+- `lib/services/theme_notifier.dart` — `selectedThemePresetIdNotifier`, pieza de estado reactivo global para el preset elegido. Vive aparte de `main.dart` para evitar un import circular con `settings_screen.dart`.
 - `lib/services/theme_service.dart` — persiste el id en `selected_theme_preset_id`.
+- `lib/services/dark_mode_notifier.dart` / `lib/services/dark_mode_service.dart` — `darkModeNotifier` (`ValueNotifier<bool>`) + persistencia en `dark_mode_enabled`, mismo patrón que el preset de tema. Es **independiente** del preset: cualquiera de los 5 presets tiene su propia variante oscura, así que "Modo oscuro" en `SettingsScreen` es un solo `SwitchListTile` que no interfiere con el `DropdownButton` de "Tema de la app". `WidgetVocIngApp` en `main.dart` anida un segundo `ValueListenableBuilder<bool>` sobre `darkModeNotifier` (dentro del que ya escuchaba `selectedThemePresetIdNotifier`) y elige `preset.darkThemeData` o `preset.themeData`.
 
-Sin colores hardcodeados: todo sale de `Theme.of(context).colorScheme`.
+Sin colores hardcodeados: todo sale de `Theme.of(context).colorScheme`. El modo oscuro no toca el widget nativo de Android (sigue con los colores hardcodeados de "Serene Wellness" en claro, ver sección de abajo).
 
 ## Packs de vocabulario descargables (sin backend)
 
@@ -91,6 +92,13 @@ Widget nativo tradicional con el paquete `home_widget`: muestra palabra + pronun
 - `AndroidManifest.xml` declara **a mano** el `<receiver>` del provider, un `<intent-filter>` extra en `MainActivity` para `es.antonborri.home_widget.action.LAUNCH`, y el `HomeWidgetBackgroundReceiver` + `HomeWidgetBackgroundService` del plugin. **El manifest del paquete `home_widget` no los declara**, no se auto-fusionan por manifest merger.
 - Para probarlo: instalar, **abrir la app al menos una vez** (puebla el estado inicial), y mantener presionado el home screen → Widgets → "Palabra de vocabulario".
 
+## Ícono de la app y splash screen
+
+- `assets/branding/venado_source.png` — arte original (venado bioluminiscente en un bosque nocturno) tal como lo compartió el usuario, en 1024×1536. Se conserva sin recortar por si se necesita regenerar el crop.
+- `assets/branding/icon_square.png` — recorte cuadrado (1024×1024) de esa imagen, centrado en cornamenta/cabeza/pecho del venado. Es el único archivo que consumen tanto `flutter_launcher_icons` como `flutter_native_splash` (configurados al final de `pubspec.yaml`).
+- Color de fondo `#015955` (muestreado de la niebla teal de la propia imagen) para el ícono adaptativo de Android y el splash — así ambos comparten identidad visual con el arte.
+- Regenerar tras cambiar la imagen: `dart run flutter_launcher_icons` y `dart run flutter_native_splash:create`. Ambos comandos **escriben directamente** sobre `android/`, `ios/` y `web/` (mipmap/launch_background/styles.xml, AppIcon.appiconset, favicons) — no hay que tocar esos archivos a mano.
+
 ## Trampas conocidas (no deshacer)
 
 - **Flags `debug*` en tests.** `test/widget_test.dart` activa `pack_service.debugDisableNetworkChecks`, `vocabulary_repository.debugSkipDownloadedPacks`, `vocabulary_state_service.debugSkipWidgetSync` y `sound_service.debugDisableSounds`, y llama a `SharedPreferences.setMockInitialValues({})`. **Son obligatorios, no opcionales**: en el entorno de test un `MethodChannel` sin handler no lanza excepción (el `try/catch` la atraparía sin problema) — el mensaje queda en buffer sin resolverse nunca bajo el reloj simulado de `flutter_test`, y `pumpAndSettle()` cuelga.
@@ -110,13 +118,13 @@ Widget nativo tradicional con el paquete `home_widget`: muestra palabra + pronun
 | 3.5 — Sistema de temas (5 presets, `SettingsScreen`) | completa |
 | 3.6 — Favoritos + efectos de sonido | completa |
 | 3.7 — Modo compacto (app + widget nativo) + skins de tarjeta por preset | completa |
+| 3.8 — Modo oscuro (variante por preset) + ícono de app y splash screen | completa |
 | 4 — Lock Screen en iPhone | no iniciada |
 
 **Posibles features a futuro** (sin etapa asignada, no implementar hasta que el proyecto las retome). Backlog visual completo (2026-09-24), agrupado por categoría:
 
 *Personalización del widget y la app:*
-- Sincronizar los colores del widget nativo de Android con el preset de tema activo (`VocabularyAppWidgetProvider.kt` hoy tiene colores hardcodeados).
-- Modo oscuro real (hoy los 5 presets son claros, salvo el fondo de "Serene Wellness").
+- Sincronizar los colores del widget nativo de Android con el preset de tema activo (`VocabularyAppWidgetProvider.kt` hoy tiene colores hardcodeados) — también aplica al modo oscuro, que hoy solo vive en la app.
 - Selector de tipografía (2-3 fuentes, ej. una editorial para las palabras y una neutra para el resto).
 - Toggle inglés↔español.
 

@@ -61,6 +61,12 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
 
+  # Generan el ícono de la app y el splash screen nativos a partir de
+  # assets/branding/icon_square.png (ver flutter_launcher_icons/flutter_native_splash
+  # más abajo). Solo se usan en tiempo de build, vía `dart run`.
+  flutter_launcher_icons: ^0.14.3
+  flutter_native_splash: ^2.4.4
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -77,6 +83,10 @@ flutter:
     - assets/data/vocabulary.json
     # Efectos de sonido generados por tool/generate_sounds.py.
     - assets/sounds/
+    # Ícono de la app y splash screen, generados con flutter_launcher_icons
+    # y flutter_native_splash a partir de estos archivos (ver configuración
+    # al final de este pubspec).
+    - assets/branding/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -103,3 +113,25 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# Ícono de la app: recorte cuadrado del venado bajo la luna (ver
+# assets/branding/icon_square.png). Se genera con `dart run
+# flutter_launcher_icons`. El color de fondo (#015955, muestreado de la
+# niebla teal de la propia imagen) rellena el ícono adaptativo de Android.
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/branding/icon_square.png"
+  adaptive_icon_background: "#015955"
+  adaptive_icon_foreground: "assets/branding/icon_square.png"
+  min_sdk_android: 21
+
+# Splash screen nativo: mismo recorte del venado centrado sobre el mismo
+# color de fondo del ícono, para que ambos se sientan parte de la misma
+# identidad. Se genera con `dart run flutter_native_splash:create`.
+flutter_native_splash:
+  color: "#015955"
+  image: assets/branding/icon_square.png
+  android_12:
+    color: "#015955"
+    image: assets/branding/icon_square.png

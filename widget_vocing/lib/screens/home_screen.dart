@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../models/vocabulary_item.dart';
 import '../services/card_density_notifier.dart';
 import '../services/card_density_service.dart';
+import '../services/dark_mode_notifier.dart';
 import '../services/favorites_service.dart';
 import '../services/pack_service.dart';
 import '../services/sound_service.dart';
@@ -191,9 +192,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 isFavorite: _favoriteIds.contains(current.id),
                                 onToggleFavorite: _toggleFavorite,
                                 density: density,
-                                cardGradient: resolveThemePreset(
+                                cardGradient: resolveActiveCardGradient(
                                   selectedThemePresetIdNotifier.value,
-                                ).cardGradient,
+                                  darkModeNotifier.value,
+                                ),
                               ),
                             ),
                           ),

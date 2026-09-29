@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../services/card_density_notifier.dart';
 import '../services/card_density_service.dart';
+import '../services/dark_mode_notifier.dart';
+import '../services/dark_mode_service.dart';
 import '../services/sound_service.dart';
 import '../services/theme_notifier.dart';
 import '../services/theme_service.dart';
@@ -20,6 +22,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String? _selectedPresetId;
   bool _soundsEnabled = true;
   CardDensity? _cardDensity;
+  bool? _darkModeEnabled;
 
   @override
   void initState() {
@@ -36,12 +39,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (!mounted) return;
       setState(() => _cardDensity = density);
     });
+    getDarkModeEnabled().then((enabled) {
+      if (!mounted) return;
+      setState(() => _darkModeEnabled = enabled);
+    });
   }
 
   Future<void> _selectPreset(String presetId) async {
     setState(() => _selectedPresetId = presetId);
     await setSelectedThemePresetId(presetId);
     selectedThemePresetIdNotifier.value = presetId;
+  }
+
+  Future<void> _toggleDarkMode(bool enabled) async {
+    setState(() => _darkModeEnabled = enabled);
+    await setDarkModeEnabled(enabled);
+    darkModeNotifier.value = enabled;
   }
 
   Future<void> _toggleSounds(bool enabled) async {
@@ -66,10 +79,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final selectedPresetId = _selectedPresetId;
     final cardDensity = _cardDensity;
+    final darkModeEnabled = _darkModeEnabled;
     return Scaffold(
       appBar: AppBar(title: const Text('Configuración')),
       drawer: const AppDrawer(currentScreen: AppScreen.settings),
-      body: selectedPresetId == null || cardDensity == null
+      body: selectedPresetId == null || cardDensity == null || darkModeEnabled == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               padding: const EdgeInsets.all(12),
@@ -101,6 +115,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           },
                         ),
                       ],
+                    ),
+                  ),
+                ),
+                Card(
+                  child: SwitchListTile(
+                    value: darkModeEnabled,
+                    onChanged: _toggleDarkMode,
+                    title: const Text('Modo oscuro'),
+                    subtitle: const Text(
+                      'Versión oscura del tema elegido arriba, en la app.',
                     ),
                   ),
                 ),
