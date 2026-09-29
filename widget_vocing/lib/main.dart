@@ -11,6 +11,8 @@ import 'services/card_density_service.dart';
 import 'services/dark_mode_notifier.dart';
 import 'services/dark_mode_service.dart';
 import 'services/home_widget_callback.dart';
+import 'services/pet_notifier.dart';
+import 'services/pet_service.dart';
 import 'services/theme_notifier.dart';
 import 'services/theme_service.dart';
 import 'theme/app_theme_preset.dart';
@@ -23,6 +25,7 @@ void main() {
   _loadPersistedThemePreset();
   _loadPersistedCardDensity();
   _loadPersistedDarkMode();
+  _loadPersistedPet();
   runApp(const WidgetVocIngApp());
 }
 
@@ -39,6 +42,11 @@ Future<void> _loadPersistedCardDensity() async {
 Future<void> _loadPersistedDarkMode() async {
   final storedEnabled = await getDarkModeEnabled();
   darkModeNotifier.value = storedEnabled;
+}
+
+Future<void> _loadPersistedPet() async {
+  final storedPet = await getPet();
+  petNotifier.value = storedPet;
 }
 
 class WidgetVocIngApp extends StatelessWidget {

@@ -46,6 +46,8 @@ dependencies:
   home_widget: ^0.7.0
   # Efectos de sonido de la UI (ver lib/services/sound_service.dart).
   audioplayers: ^6.1.0
+  # Acelerómetro para la mascota de compañía (ver lib/widgets/pet_companion.dart).
+  sensors_plus: ^6.1.1
 
 dependency_overrides:
   path_provider_foundation: 2.4.1

@@ -4,10 +4,13 @@ import '../services/card_density_notifier.dart';
 import '../services/card_density_service.dart';
 import '../services/dark_mode_notifier.dart';
 import '../services/dark_mode_service.dart';
+import '../services/pet_notifier.dart';
+import '../services/pet_service.dart';
 import '../services/sound_service.dart';
 import '../services/theme_notifier.dart';
 import '../services/theme_service.dart';
 import '../services/vocabulary_state_service.dart';
+import '../pets/pet_catalog.dart';
 import '../theme/app_theme_preset.dart';
 import '../widgets/app_drawer.dart';
 
@@ -23,6 +26,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _soundsEnabled = true;
   CardDensity? _cardDensity;
   bool? _darkModeEnabled;
+  Pet? _selectedPet;
 
   @override
   void initState() {
@@ -42,6 +46,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     getDarkModeEnabled().then((enabled) {
       if (!mounted) return;
       setState(() => _darkModeEnabled = enabled);
+    });
+    getPet().then((pet) {
+      if (!mounted) return;
+      setState(() => _selectedPet = pet);
     });
   }
 
@@ -66,6 +74,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (enabled) playAppSound(AppSound.favorite);
   }
 
+  Future<void> _selectPet(Pet pet) async {
+    setState(() => _selectedPet = pet);
+    await setPet(pet);
+    petNotifier.value = pet;
+  }
+
   Future<void> _toggleCardDensity(bool compact) async {
     final density = compact ? CardDensity.compact : CardDensity.large;
     setState(() => _cardDensity = density);
@@ -82,10 +96,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final selectedPresetId = _selectedPresetId;
     final cardDensity = _cardDensity;
     final darkModeEnabled = _darkModeEnabled;
+    final selectedPet = _selectedPet;
     return Scaffold(
       appBar: AppBar(title: const Text('Configuración')),
       drawer: const AppDrawer(currentScreen: AppScreen.settings),
-      body: selectedPresetId == null || cardDensity == null || darkModeEnabled == null
+      body:
+          selectedPresetId == null ||
+              cardDensity == null ||
+              darkModeEnabled == null ||
+              selectedPet == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               padding: const EdgeInsets.all(12),
@@ -114,6 +133,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ],
                           onChanged: (value) {
                             if (value != null) _selectPreset(value);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Mascota',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 4),
+                        DropdownButton<Pet>(
+                          value: selectedPet,
+                          isExpanded: true,
+                          underline: const SizedBox.shrink(),
+                          items: [
+                            for (final pet in Pet.values)
+                              DropdownMenuItem(
+                                value: pet,
+                                child: Text(
+                                  '${petCatalog[pet]!.emoji}  ${petCatalog[pet]!.displayName}',
+                                ),
+                              ),
+                          ],
+                          onChanged: (value) {
+                            if (value != null) _selectPet(value);
                           },
                         ),
                       ],

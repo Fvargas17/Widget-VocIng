@@ -16,6 +16,7 @@ import 'package:widget_vocing/services/pack_service.dart' as pack_service;
 import 'package:widget_vocing/services/sound_service.dart' as sound_service;
 import 'package:widget_vocing/services/vocabulary_state_service.dart'
     as vocabulary_state_service;
+import 'package:widget_vocing/widgets/pet_companion.dart' as pet_companion;
 
 void main() {
   // Los tests no deben depender de red ni de I/O de archivos real (canales
@@ -31,6 +32,11 @@ void main() {
   // Mismo motivo para el audio: el MethodChannel de audioplayers tampoco
   // tiene handler en tests, y un `play()` sin resolver cuelga pumpAndSettle().
   sound_service.debugDisableSounds = true;
+  // PetCompanion corre un AnimationController.repeat() y se suscribe al
+  // acelerómetro por defecto en HomeScreen: el primero nunca "asienta" y el
+  // segundo no tiene handler de canal de plataforma en tests, así que ambos
+  // colgarían pumpAndSettle() indefinidamente si no se desactivan aquí.
+  pet_companion.debugDisablePetMotion = true;
   // HomeScreen consulta las palabras aprendidas vía shared_preferences en
   // initState; sin este mock, el canal de plataforma real nunca resuelve y
   // pumpAndSettle() queda esperando para siempre.

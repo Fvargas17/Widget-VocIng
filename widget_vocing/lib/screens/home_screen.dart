@@ -8,11 +8,14 @@ import '../services/card_density_service.dart';
 import '../services/dark_mode_notifier.dart';
 import '../services/favorites_service.dart';
 import '../services/pack_service.dart';
+import '../services/pet_notifier.dart';
+import '../services/pet_service.dart';
 import '../services/sound_service.dart';
 import '../services/theme_notifier.dart';
 import '../services/vocabulary_state_service.dart';
 import '../theme/app_theme_preset.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/pet_companion.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Set<String> _favoriteIds = {};
   bool _showLearnedFeedback = false;
   Timer? _learnedFeedbackTimer;
+  int _learnedPulse = 0;
 
   List<VocabularyItem>? get _items => _snapshot?.items;
   VocabularyItem? get _currentItem => _snapshot?.currentItem;
@@ -113,7 +117,10 @@ class _HomeScreenState extends State<HomeScreen> {
     playAppSound(AppSound.learned);
     final snapshot = await _stateService.markCurrentAsLearned();
     if (!mounted) return;
-    setState(() => _snapshot = snapshot);
+    setState(() {
+      _snapshot = snapshot;
+      _learnedPulse++;
+    });
     _flashLearnedFeedback();
   }
 
@@ -200,6 +207,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
+                      ),
+                    ),
+                  ),
+                  ValueListenableBuilder<Pet>(
+                    valueListenable: petNotifier,
+                    builder: (context, pet, _) => ValueListenableBuilder<CardDensity>(
+                      valueListenable: cardDensityNotifier,
+                      builder: (context, density, _) => PetCompanion(
+                        pet: pet,
+                        density: density,
+                        celebrationSignal: _learnedPulse,
                       ),
                     ),
                   ),

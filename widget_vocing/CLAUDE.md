@@ -37,6 +37,7 @@ No hay paquete de manejo de estado (Provider/Riverpod/Bloc): todo es `StatefulWi
   - Tras la carga inicial, `_checkForNewPacks()` avisa en un `AlertDialog` si hay packs nuevos ("Ver" → `/packs`) y llama a `dismissPacks()` para no repetir el aviso.
   - `VocabularyCard` recibe `isFavorite` + `onToggleFavorite`; con `onToggleFavorite == null` no dibuja la estrella. La estrella (`Icons.star` / `Icons.star_border`) ocupa **su propia fila** (`Align.centerRight` como primer hijo del `Column`), no un `Stack` superpuesto: así no tapa palabras largas y queda dentro del área que recibe toques.
   - `VocabularyCard` también recibe `density: CardDensity` (paddings/tipografía escalados vía `_CardSizes`, sin ocultar campos) y `cardGradient: Gradient?` (degradado del preset activo; si es `null`, usa el color plano de `CardThemeData`). Quien la instancia (`HomeScreen`, `FavoritesScreen`) resuelve ambos valores y los pasa por parámetro — la card en sí no lee ningún notifier.
+  - Debajo de la card, antes del bloque fijo de "Marcar como aprendida", vive `PetCompanion` (ver sección "Mascota de compañía" más abajo). Solo aparece en `HomeScreen` — decisión deliberada, `FavoritesScreen` no la incluye.
 - **`favorites_screen.dart`** — `FavoritesScreen`. Clon visual de `HomeScreen` con tres diferencias deliberadas: recorre las favoritas **en orden de agregado** (índice local, no aleatorio), **no excluye las aprendidas**, y **no usa `VocabularyStateService`** (no altera la palabra de Inicio ni la del widget nativo). Arriba lleva un `DropdownButton` con todas las favoritas + el conteo en texto pequeño.
 - **`learned_words_screen.dart`** — lista las palabras aprendidas con el conteo en el `AppBar` y permite desmarcarlas.
 - **`pack_management_screen.dart`** — cruza `fetchRemoteIndex()` con `getDownloadedPackVersions()` para listar todos los packs con su estado (no descargado / actualización disponible / descargado), y permite descargar o eliminar cada uno.
@@ -55,10 +56,24 @@ Las pantallas de lista envuelven cada fila en un `Card` para que se distinga del
 - `lib/services/pack_service.dart` — ver "Packs descargables".
 - `lib/services/card_density_service.dart` / `lib/services/card_density_notifier.dart` — persisten y notifican `CardDensity` (`compact`/`large`, key `card_density`), mismo patrón que `theme_service.dart`/`theme_notifier.dart`. `HomeScreen` y `FavoritesScreen` escuchan `cardDensityNotifier` con su propio `ValueListenableBuilder` (a diferencia del tema, no reconstruyen toda la `MaterialApp`).
 - `lib/services/home_widget_callback.dart` — `backgroundCallback(Uri?)`, entry point (`@pragma('vm:entry-point')`) que `home_widget` invoca con la app cerrada. Deliberadamente delgado: interpreta `uri.host` (`next`/`previous`/`learned`) y delega en `VocabularyStateService`, para que app y widget compartan idéntica lógica.
+- `lib/services/pet_service.dart` / `lib/services/pet_notifier.dart` — persisten y notifican `Pet` (`reno`/`pollito`/`gato`, key `selected_pet`), mismo patrón que `card_density_service.dart`/`card_density_notifier.dart`. `main.dart` carga el valor guardado en `petNotifier` al arrancar (igual que tema/densidad/modo oscuro); `SettingsScreen` lo actualiza al elegir mascota.
 
 ### Sonidos
 
 Los tres WAV de `assets/sounds/` se **sintetizan** con `tool/generate_sounds.py` (stdlib de Python) en vez de traerse de un banco externo: quedan versionados, sin licencias que rastrear, y se reajustan cambiando los parámetros del script. `nav.wav` (blip corto), `learned.wav` (arpegio ascendente), `favorite.wav` (shimmer agudo).
+
+### Mascota de compañía (`lib/pets/`, `lib/widgets/pet_companion.dart`)
+
+Feature sin utilidad funcional, a propósito: un distintivo de marca inspirado en las mascotas de extensiones de IDE (y, más lejos, en herramientas de streaming tipo Stream Avatars/Triiibe/Kappamon, pero sin chat ni multiusuario — aquí es una sola mascota por persona). Vive en una caja con solo bordes debajo de la card de `HomeScreen`.
+
+- `lib/pets/pet_catalog.dart` — `PetVisual` (hoy solo `displayName` + `emoji`) y el mapa `petCatalog: Map<Pet, PetVisual>`. Es la única capa que sabe que hoy la mascota es un emoji; el día que haya pixel art con animaciones, el cambio se limita a esta capa y al render dentro de `PetCompanion`, sin tocar el catálogo de mascotas (`Pet` enum) ni cómo se persiste/elige.
+- `lib/widgets/pet_companion.dart` — `PetCompanion({pet, density, celebrationSignal})`, `StatefulWidget` con dos `AnimationController` independientes:
+  - **Paseo**: `repeat(reverse: true)` sobre un `Tween` mapeado al ancho disponible.
+  - **Gravedad real**: suscripción a `accelerometerEventStream()` (`sensors_plus`) sobre el eje `x`, suavizada (low-pass). La gravedad pesa más que el paseo a propósito: `paceInfluence = 1 - |tiltBias|` apaga el paseo cuando la inclinación es fuerte, para que la mascota no "escale" contra la inclinación al llegar a una esquina.
+  - **Celebración**: un tercer control, finito (no `repeat`), disparado en `didUpdateWidget` cuando cambia `celebrationSignal` — un contador que `HomeScreen` incrementa dentro de `_markCurrentAsLearned`.
+  - `density: CardDensity` solo se usa para calcular el margen lateral (12/24, igual que `_CardSizes.margin` de `VocabularyCard`), así la caja de la mascota se ve del mismo ancho que la card de arriba.
+  - `@visibleForTesting bool debugDisablePetMotion` — **obligatorio en tests**, mismo motivo que `debugDisableSounds`: un `AnimationController.repeat()` nunca "asienta", así que `pumpAndSettle()` colgaría indefinidamente si `HomeScreen` incluye la mascota por defecto.
+- Ideas de mejora ya exploradas pero no implementadas (sprites con ciclos de animación, física con velocidad/inercia real, etc.): ver `docs/pet_companion_roadmap.md`.
 
 ### Sistema de temas (`lib/theme/`)
 
@@ -106,6 +121,7 @@ Widget nativo tradicional con el paquete `home_widget`: muestra palabra + pronun
 - **`dependency_overrides: path_provider_foundation: 2.4.1`.** Sin esto, `flutter test`/`flutter build` fallan en esta máquina: el Flutter SDK vive en una ruta con espacio (`C:\SDK Flutter\flutter`), lo que rompe la compilación de "native assets" de `objective_c` (dependencia transitiva de versiones más nuevas de ese paquete).
 - **`analysis_options.yaml`** excluye `build/**`, `android/**`, `ios/**`, `web/**`.
 - **El isolate headless del widget no es nuevo en cada toque.** `HomeWidgetBackgroundService.kt` (dentro del paquete `home_widget`, no de este repo) guarda el `FlutterEngine` del callback en un `companion object` y lo reutiliza mientras el proceso siga vivo — solo se crea una vez, la primera vez que se toca un botón del widget. Como `SharedPreferences.getInstance()` (API legacy del paquete `shared_preferences`) cachea todas las claves en memoria la primera vez que se llama **por isolate**, ese isolate reutilizado nunca ve cambios que la app en primer plano escriba después (p. ej. cambiar el preset de tema en Configuración mientras el widget ya estaba "caliente"). Por eso `VocabularyStateService._freshPrefs()` siempre llama `reload()` antes de leer cualquier clave — quitarlo revive el bug (el widget se queda pegado al snapshot de la primera interacción).
+- **Agregar un plugin nativo nuevo (ej. `sensors_plus`) requiere reinstalar la app, no solo hot reload/restart.** El canal de plataforma del plugin se registra al arrancar el proceso nativo; si se sigue probando sobre una sesión de `flutter run` que ya estaba corriendo desde antes de agregar la dependencia, el sensor simplemente no responde y parece "no funcionar" cuando en realidad nunca se registró. Hay que parar la sesión y correr `flutter run` desde cero (o desinstalar y reinstalar el APK).
 - **Colores hacia el widget nativo van como string `#AARRGGBB`, nunca como `int`.** `Color.toARGB32()` da valores que superan el rango de un `Int32` con signo (canal alfa `0xFF`), así que el codec estándar de Flutter los serializa como `Long` del lado de Kotlin en vez de `Int`; `HomeWidgetPlugin` los guarda con el tipo que reciba, y leerlos siempre con `getInt()` revienta con `ClassCastException` **dentro de `onUpdate()`, que corre en el proceso de la app** (no del launcher) — así que no solo falla el widget, tumba la app entera. Ver `_colorToHex()` en `vocabulary_state_service.dart` y `parseWidgetColor()` en `VocabularyAppWidgetProvider.kt`.
 
 ## Estado del roadmap
@@ -122,9 +138,10 @@ Widget nativo tradicional con el paquete `home_widget`: muestra palabra + pronun
 | 3.7 — Modo compacto (app + widget nativo) + skins de tarjeta por preset | completa |
 | 3.8 — Modo oscuro (variante por preset) + ícono de app y splash screen | completa |
 | 3.9 — Sincronizar colores del widget nativo con el preset/modo oscuro activos | completa |
-| 4 — Lock Screen en iPhone | no iniciada |
+| 3.10 — Mascota de compañía (paseo + gravedad real vía acelerómetro, elegible en `SettingsScreen`) | completa |
+| 5.5 — Lock Screen en iPhone | no iniciada |
 
-**Posibles features a futuro** (sin etapa asignada, no implementar hasta que el proyecto las retome). Backlog visual completo (2026-09-24), agrupado por categoría:
+**Posibles features a futuro** (sin etapa asignada, no implementar hasta que el proyecto las retome). Backlog visual completo (2026-09-24), agrupado por categoría. Para ideas específicas de la mascota (sprites, física más realista, etc.), ver `docs/pet_companion_roadmap.md`:
 
 *Personalización del widget y la app:*
 - Selector de tipografía (2-3 fuentes, ej. una editorial para las palabras y una neutra para el resto).
