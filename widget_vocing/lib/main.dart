@@ -6,15 +6,10 @@ import 'screens/home_screen.dart';
 import 'screens/learned_words_screen.dart';
 import 'screens/pack_management_screen.dart';
 import 'screens/settings_screen.dart';
-import 'services/card_density_notifier.dart';
-import 'services/card_density_service.dart';
+import 'screens/splash_screen.dart';
 import 'services/dark_mode_notifier.dart';
-import 'services/dark_mode_service.dart';
 import 'services/home_widget_callback.dart';
-import 'services/pet_notifier.dart';
-import 'services/pet_service.dart';
 import 'services/theme_notifier.dart';
-import 'services/theme_service.dart';
 import 'theme/app_theme_preset.dart';
 
 export 'screens/home_screen.dart' show HomeScreen, VocabularyCard;
@@ -22,31 +17,7 @@ export 'screens/home_screen.dart' show HomeScreen, VocabularyCard;
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   HomeWidget.registerInteractivityCallback(backgroundCallback);
-  _loadPersistedThemePreset();
-  _loadPersistedCardDensity();
-  _loadPersistedDarkMode();
-  _loadPersistedPet();
   runApp(const WidgetVocIngApp());
-}
-
-Future<void> _loadPersistedThemePreset() async {
-  final storedId = await getSelectedThemePresetId();
-  selectedThemePresetIdNotifier.value = storedId;
-}
-
-Future<void> _loadPersistedCardDensity() async {
-  final storedDensity = await getCardDensity();
-  cardDensityNotifier.value = storedDensity;
-}
-
-Future<void> _loadPersistedDarkMode() async {
-  final storedEnabled = await getDarkModeEnabled();
-  darkModeNotifier.value = storedEnabled;
-}
-
-Future<void> _loadPersistedPet() async {
-  final storedPet = await getPet();
-  petNotifier.value = storedPet;
 }
 
 class WidgetVocIngApp extends StatelessWidget {
@@ -67,7 +38,8 @@ class WidgetVocIngApp extends StatelessWidget {
               theme: darkModeEnabled ? preset.darkThemeData : preset.themeData,
               initialRoute: '/',
               routes: {
-                '/': (_) => const HomeScreen(),
+                '/': (_) => const SplashScreen(),
+                '/home': (_) => const HomeScreen(),
                 '/packs': (_) => const PackManagementScreen(),
                 '/learned': (_) => const LearnedWordsScreen(),
                 '/favorites': (_) => const FavoritesScreen(),

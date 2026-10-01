@@ -27,7 +27,7 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.home),
             title: const Text('Inicio'),
             selected: currentScreen == AppScreen.home,
-            onTap: () => _navigateTo(context, AppScreen.home, '/'),
+            onTap: () => _navigateTo(context, AppScreen.home, '/home'),
           ),
           ListTile(
             leading: const Icon(Icons.download_for_offline_outlined),
