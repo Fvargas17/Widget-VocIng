@@ -1,0 +1,47 @@
+[
+  {
+    "id": "pack_fr_0001_0001",
+    "course": "en_fr",
+    "word": "RÉUSSIR",
+    "pronunciation": "ray-ew-SEER",
+    "description": "Mener quelque chose à bien ou atteindre un objectif.",
+    "translation": "To achieve something, to succeed at it.",
+    "example": "Elle a travaillé dur pour réussir dans sa carrière."
+  },
+  {
+    "id": "pack_fr_0001_0002",
+    "course": "en_fr",
+    "word": "COMPTER SUR",
+    "pronunciation": "kohn-TAY sewr",
+    "description": "Faire confiance à quelqu'un ou dépendre de quelque chose.",
+    "translation": "To rely on, to count on someone or something.",
+    "example": "Tu peux compter sur lui pour finir le travail à temps."
+  },
+  {
+    "id": "pack_fr_0001_0003",
+    "course": "en_fr",
+    "word": "SOULIGNER",
+    "pronunciation": "soo-lee-NYAY",
+    "description": "Signaler ou mettre en avant quelque chose de précis.",
+    "translation": "To point out, to highlight something specific.",
+    "example": "Le professeur a souligné plusieurs erreurs dans la dissertation."
+  },
+  {
+    "id": "pack_fr_0001_0004",
+    "course": "en_fr",
+    "word": "RÉTICENT",
+    "pronunciation": "ray-tee-SAHN",
+    "description": "Qui hésite ou n'a pas envie de faire quelque chose.",
+    "translation": "Reluctant, unwilling to do something.",
+    "example": "Il était réticent à changer ses plans à la dernière minute."
+  },
+  {
+    "id": "pack_fr_0001_0005",
+    "course": "en_fr",
+    "word": "TROUVER LA SOLUTION",
+    "pronunciation": "troo-VAY la so-lew-SYOHN",
+    "description": "Résoudre quelque chose après y avoir réfléchi.",
+    "translation": "To figure it out, to work out the answer.",
+    "example": "Il m'a fallu un moment pour trouver la solution."
+  }
+]

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_locale.dart';
 import 'app_theme_builder.dart';
 import 'app_theme_roles.dart';
 
@@ -22,8 +23,10 @@ class AppThemePreset {
   /// Id persistido en `shared_preferences`.
   final String id;
 
-  /// Nombre visible en la pantalla de Configuración.
-  final String displayName;
+  /// Nombre visible en la pantalla de Configuración, en los dos idiomas de
+  /// interfaz. Vive aquí (y no en `AppStrings`) para que agregar un preset
+  /// siga siendo una sola entrada en [appThemePresets].
+  final LocalizedText displayName;
 
   /// Los 7 roles crudos de la variante clara, antes de pasar por
   /// [buildThemeFromRoles]. Se conservan aparte de [themeData] porque
@@ -69,7 +72,7 @@ LinearGradient _cardSkin(Color card, Color softAccent) {
 /// preset, sin repetirlos.
 AppThemePreset _buildPreset({
   required String id,
-  required String displayName,
+  required LocalizedText displayName,
   required AppThemeRoles roles,
   required AppThemeRoles darkRoles,
 }) {
@@ -92,7 +95,10 @@ AppThemePreset _buildPreset({
 final List<AppThemePreset> appThemePresets = [
   _buildPreset(
     id: 'serene_wellness',
-    displayName: 'Bosque Luminoso',
+    displayName: const LocalizedText(
+      es: 'Bosque Luminoso',
+      en: 'Glowing Forest',
+    ),
     roles: const AppThemeRoles(
       primary: Color(0xFF0E9E97),
       accent: Color(0xFFC97F22),
@@ -114,7 +120,7 @@ final List<AppThemePreset> appThemePresets = [
   ),
   _buildPreset(
     id: 'cafe_claro',
-    displayName: 'Café claro',
+    displayName: const LocalizedText(es: 'Café claro', en: 'Light Coffee'),
     roles: const AppThemeRoles(
       primary: Color(0xFF8AA482),
       accent: Color(0xFFB89B7A),
@@ -136,7 +142,7 @@ final List<AppThemePreset> appThemePresets = [
   ),
   _buildPreset(
     id: 'terracota',
-    displayName: 'Terracota',
+    displayName: const LocalizedText(es: 'Terracota', en: 'Terracotta'),
     roles: const AppThemeRoles(
       primary: Color(0xFF8AA482),
       accent: Color(0xFFB8755D),
@@ -158,7 +164,7 @@ final List<AppThemePreset> appThemePresets = [
   ),
   _buildPreset(
     id: 'cafe',
-    displayName: 'Café',
+    displayName: const LocalizedText(es: 'Café', en: 'Coffee'),
     roles: const AppThemeRoles(
       primary: Color(0xFF8AA482),
       accent: Color(0xFF7A5C48),
@@ -180,7 +186,7 @@ final List<AppThemePreset> appThemePresets = [
   ),
   _buildPreset(
     id: 'azul_petroleo',
-    displayName: 'Azul petróleo',
+    displayName: const LocalizedText(es: 'Azul petróleo', en: 'Teal Blue'),
     roles: const AppThemeRoles(
       primary: Color(0xFF8AA482),
       accent: Color(0xFF42666A),

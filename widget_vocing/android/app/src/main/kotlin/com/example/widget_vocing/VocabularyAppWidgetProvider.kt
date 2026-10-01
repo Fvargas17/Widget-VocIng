@@ -20,6 +20,12 @@ private const val DEFAULT_COLOR_BUTTON = "#FF0E9E97"
 private const val DEFAULT_COLOR_TEXT = "#FF0B2624"
 private const val DEFAULT_COLOR_TEXT_SECONDARY = "#FF4C7570"
 
+// Estado vacío en el idioma del curso por defecto (Español → Inglés). El texto
+// real llega desde Dart en "widget_empty_text", porque solo ahí se sabe qué
+// curso —y por lo tanto qué idioma de interfaz— está activo; este default
+// cubre el caso de agregar el widget sin haber abierto nunca la app.
+private const val DEFAULT_EMPTY_TEXT = "¡Todo aprendido!"
+
 class VocabularyAppWidgetProvider : HomeWidgetProvider() {
 
     override fun onUpdate(
@@ -38,7 +44,10 @@ class VocabularyAppWidgetProvider : HomeWidgetProvider() {
             val views = RemoteViews(context.packageName, layoutId).apply {
                 val isEmpty = widgetData.getBoolean("widget_empty", true)
                 if (isEmpty) {
-                    setTextViewText(R.id.widget_word, "¡Todo aprendido!")
+                    setTextViewText(
+                        R.id.widget_word,
+                        widgetData.getString("widget_empty_text", DEFAULT_EMPTY_TEXT)
+                    )
                     setTextViewText(R.id.widget_pronunciation, "")
                     setTextViewText(R.id.widget_example, "")
                 } else {

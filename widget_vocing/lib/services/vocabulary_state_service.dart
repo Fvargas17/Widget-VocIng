@@ -6,10 +6,12 @@ import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/vocabulary_repository.dart';
+import '../l10n/app_strings.dart';
 import '../models/vocabulary_item.dart';
 import '../theme/app_theme_preset.dart';
 import 'card_density_service.dart';
 import 'dark_mode_service.dart';
+import 'language_course_service.dart';
 import 'learned_words_service.dart';
 import 'theme_service.dart';
 
@@ -69,17 +71,25 @@ class VocabularyStateSnapshot {
 /// cambiar el preset de tema en Configuración): seguía viendo el snapshot
 /// de la primera vez que se calentó. Por eso `_freshPrefs()` llama
 /// `reload()` antes de leer nada.
+///
+/// **Orden importante:** el curso de idioma activo (`getLanguageCourse()`) y
+/// las demás preferencias de apariencia se leen siempre *después* de
+/// `_freshPrefs()`. `reload()` refresca el mapa cacheado completo de ese
+/// isolate, así que cualquier `getX()` posterior ve valores frescos; leerlas
+/// antes traería el snapshot viejo y el widget seguiría mostrando palabras
+/// del curso anterior.
 class VocabularyStateService {
   const VocabularyStateService();
 
   Future<VocabularyStateSnapshot> loadState() async {
     final prefs = await _freshPrefs();
-    final items = await loadVocabulary();
+    final items = await loadVocabulary(await getLanguageCourse());
     final learnedIds = await getLearnedWordIds();
     final historyIds = _readHistory(prefs);
 
-    final active =
-        items.where((item) => !learnedIds.contains(item.id)).toList();
+    final active = items
+        .where((item) => !learnedIds.contains(item.id))
+        .toList();
     final persistedId = prefs.getString(_currentIdPrefsKey);
     VocabularyItem? current = persistedId == null
         ? null
@@ -108,12 +118,28 @@ class VocabularyStateService {
   /// palabra actual ni el historial).
   Future<void> syncWidgetAppearance() => loadState();
 
+  /// Olvida la palabra actual y el historial, y vuelve a cargar el estado.
+  /// Lo llama `SettingsScreen` al cambiar de curso: los ids guardados son del
+  /// curso anterior, así que `loadState()` elige una palabra del curso nuevo
+  /// y la empuja al widget nativo de inmediato.
+  ///
+  /// (Limpiar el historial no es imprescindible —`goToPreviousWord` ya salta
+  /// los ids que no existen en el pool activo— pero deja el estado coherente
+  /// en vez de arrastrar ids muertos del otro idioma.)
+  Future<VocabularyStateSnapshot> resetCourseState() async {
+    final prefs = await _freshPrefs();
+    await prefs.remove(_currentIdPrefsKey);
+    await prefs.remove(_historyIdsPrefsKey);
+    return loadState();
+  }
+
   Future<VocabularyStateSnapshot> goToNextWord() async {
     final prefs = await _freshPrefs();
-    final items = await loadVocabulary();
+    final items = await loadVocabulary(await getLanguageCourse());
     final learnedIds = await getLearnedWordIds();
-    final active =
-        items.where((item) => !learnedIds.contains(item.id)).toList();
+    final active = items
+        .where((item) => !learnedIds.contains(item.id))
+        .toList();
 
     final currentId = prefs.getString(_currentIdPrefsKey);
     final current = currentId == null ? null : _findActive(active, currentId);
@@ -158,11 +184,12 @@ class VocabularyStateService {
 
   Future<VocabularyStateSnapshot> goToPreviousWord() async {
     final prefs = await _freshPrefs();
-    final items = await loadVocabulary();
+    final items = await loadVocabulary(await getLanguageCourse());
     final learnedIds = await getLearnedWordIds();
 
-    final active =
-        items.where((item) => !learnedIds.contains(item.id)).toList();
+    final active = items
+        .where((item) => !learnedIds.contains(item.id))
+        .toList();
 
     var historyIds = _readHistory(prefs);
     VocabularyItem? previous;
@@ -198,10 +225,11 @@ class VocabularyStateService {
 
     await markWordAsLearned(currentId);
 
-    final items = await loadVocabulary();
+    final items = await loadVocabulary(await getLanguageCourse());
     final learnedIds = await getLearnedWordIds();
-    final active =
-        items.where((item) => !learnedIds.contains(item.id)).toList();
+    final active = items
+        .where((item) => !learnedIds.contains(item.id))
+        .toList();
     final next = _pickRandom(active);
 
     await _writeCurrentId(prefs, next?.id);
@@ -252,7 +280,10 @@ class VocabularyStateService {
     if (debugSkipWidgetSync) return;
     try {
       final current = snapshot.currentItem;
-      await HomeWidget.saveWidgetData<String>('widget_word', current?.word ?? '');
+      await HomeWidget.saveWidgetData<String>(
+        'widget_word',
+        current?.word ?? '',
+      );
       await HomeWidget.saveWidgetData<String>(
         'widget_pronunciation',
         current?.pronunciation ?? '',
@@ -269,9 +300,14 @@ class VocabularyStateService {
         'widget_has_next',
         snapshot.activeItems.length > 1,
       );
-      await HomeWidget.saveWidgetData<bool>(
-        'widget_empty',
-        current == null,
+      await HomeWidget.saveWidgetData<bool>('widget_empty', current == null);
+      // El único texto fijo del widget nativo. Viaja desde aquí (en vez de
+      // vivir en el Kotlin) porque su idioma depende del curso activo, que
+      // solo conoce el lado Dart.
+      final course = await getLanguageCourse();
+      await HomeWidget.saveWidgetData<String>(
+        'widget_empty_text',
+        appStringsFor(course.uiLocale).widgetAllLearned,
       );
       await HomeWidget.saveWidgetData<bool>(
         'widget_compact_mode',

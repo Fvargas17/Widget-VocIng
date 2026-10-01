@@ -31,6 +31,12 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Traducciones de los textos propios de Material (tooltips de navegación,
+  # semantics) para los idiomas de UI que soporta la app. Los strings de la
+  # app viven en lib/l10n/app_strings*.dart, sin codegen.
+  flutter_localizations:
+    sdk: flutter
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
@@ -82,7 +88,10 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/data/vocabulary.json
+    # Un pack base por curso de idioma (vocabulary_es_en.json,
+    # vocabulary_en_fr.json): se declara el directorio para que agregar un
+    # curso nuevo no requiera tocar este archivo.
+    - assets/data/
     # Efectos de sonido generados por tool/generate_sounds.py.
     - assets/sounds/
     # Ícono de la app y splash screen, generados con flutter_launcher_icons

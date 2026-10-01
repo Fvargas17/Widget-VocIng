@@ -1,6 +1,7 @@
 [
   {
     "id": "pack_0002_0001",
+    "course": "es_en",
     "word": "AN EARLY BIRD",
     "pronunciation": "an ór-li berd",
     "description": "Someone who likes to wake up and start their day early.",
@@ -9,6 +10,7 @@
   },
   {
     "id": "pack_0002_0002",
+    "course": "es_en",
     "word": "A NIGHT OWL",
     "pronunciation": "a náit aul",
     "description": "Someone who prefers staying awake and being active late at night.",
@@ -17,6 +19,7 @@
   },
   {
     "id": "pack_0002_0003",
+    "course": "es_en",
     "word": "TO RUN ON COFFEE",
     "pronunciation": "tu ran on kó-fi",
     "description": "To depend on coffee to have enough energy.",
@@ -25,6 +28,7 @@
   },
   {
     "id": "pack_0002_0004",
+    "course": "es_en",
     "word": "TO FIND A BALANCE",
     "pronunciation": "tu fáind a bá-lans",
     "description": "To manage two or more parts of your life successfully.",
@@ -33,6 +37,7 @@
   },
   {
     "id": "pack_0002_0005",
+    "course": "es_en",
     "word": "TO STICK TO SOMETHING",
     "pronunciation": "tu stik tu sám-zing",
     "description": "To continue doing something without giving up.",
@@ -41,6 +46,7 @@
   },
   {
     "id": "pack_0002_0006",
+    "course": "es_en",
     "word": "TO GET INTO A ROUTINE",
     "pronunciation": "tu guet ín-tu a ru-tín",
     "description": "To develop a regular pattern of doing things.",
@@ -49,6 +55,7 @@
   },
   {
     "id": "pack_0002_0007",
+    "course": "es_en",
     "word": "TO BE SNOWED UNDER",
     "pronunciation": "tu bi snóud án-dar",
     "description": "To have far too much work to deal with.",
@@ -57,6 +64,7 @@
   },
   {
     "id": "pack_0002_0008",
+    "course": "es_en",
     "word": "TO MAKE THE MOST OF YOUR TIME",
     "pronunciation": "tu méik de móust ov iór táim",
     "description": "To use your available time effectively.",
@@ -65,6 +73,7 @@
   },
   {
     "id": "pack_0002_0009",
+    "course": "es_en",
     "word": "TO WIND DOWN",
     "pronunciation": "tu uáind daun",
     "description": "To gradually relax after being busy or stressed.",
@@ -73,6 +82,7 @@
   },
   {
     "id": "pack_0002_0010",
+    "course": "es_en",
     "word": "TO GET INTO THE SWING OF THINGS",
     "pronunciation": "tu guet ín-tu de suíng ov zings",
     "description": "To become comfortable and active in a new situation or routine.",

@@ -1,6 +1,7 @@
 [
   {
     "id": "pack_0003_0001",
+    "course": "es_en",
     "word": "TO WAKE UP",
     "pronunciation": "tu uéik ap",
     "description": "To stop sleeping and become conscious.",
@@ -9,6 +10,7 @@
   },
   {
     "id": "pack_0003_0002",
+    "course": "es_en",
     "word": "TO GET OUT OF BED",
     "pronunciation": "tu guet áut ov bed",
     "description": "To physically leave your bed after waking up.",
@@ -17,6 +19,7 @@
   },
   {
     "id": "pack_0003_0003",
+    "course": "es_en",
     "word": "TO HIT THE SNOOZE BUTTON",
     "pronunciation": "tu jit de snus bá-ton",
     "description": "To press the button that delays your alarm for a few more minutes.",
@@ -25,6 +28,7 @@
   },
   {
     "id": "pack_0003_0004",
+    "course": "es_en",
     "word": "TO GET READY",
     "pronunciation": "tu guet ré-di",
     "description": "To prepare yourself before going somewhere.",
@@ -33,6 +37,7 @@
   },
   {
     "id": "pack_0003_0005",
+    "course": "es_en",
     "word": "TO FRESHEN UP",
     "pronunciation": "tu fré-shen ap",
     "description": "To quickly wash your face and hands to feel clean and awake.",
@@ -41,6 +46,7 @@
   },
   {
     "id": "pack_0003_0006",
+    "course": "es_en",
     "word": "TO TAKE A SHOWER",
     "pronunciation": "tu téik a sháu-er",
     "description": "To wash your whole body under running water.",
@@ -49,6 +55,7 @@
   },
   {
     "id": "pack_0003_0007",
+    "course": "es_en",
     "word": "TO GET DRESSED",
     "pronunciation": "tu guet drest",
     "description": "To put your clothes on.",
@@ -57,6 +64,7 @@
   },
   {
     "id": "pack_0003_0008",
+    "course": "es_en",
     "word": "TO GRAB A QUICK BREAKFAST",
     "pronunciation": "tu grab a kuík brék-fast",
     "description": "To eat something small and fast in the morning.",
@@ -65,6 +73,7 @@
   },
   {
     "id": "pack_0003_0009",
+    "course": "es_en",
     "word": "TO MAKE COFFEE",
     "pronunciation": "tu méik kó-fi",
     "description": "To prepare coffee.",
@@ -73,6 +82,7 @@
   },
   {
     "id": "pack_0003_0010",
+    "course": "es_en",
     "word": "TO HEAD TO WORK",
     "pronunciation": "tu jed tu uérk",
     "description": "To start going in the direction of your workplace.",
@@ -81,6 +91,7 @@
   },
   {
     "id": "pack_0003_0011",
+    "course": "es_en",
     "word": "TO COMMUTE TO WORK",
     "pronunciation": "tu co-miút tu uérk",
     "description": "To travel regularly between your home and your workplace.",
@@ -89,6 +100,7 @@
   },
   {
     "id": "pack_0003_0012",
+    "course": "es_en",
     "word": "TO RUN ERRANDS",
     "pronunciation": "tu ran é-rands",
     "description": "To go out to do small necessary tasks, like shopping or paying bills.",
@@ -97,6 +109,7 @@
   },
   {
     "id": "pack_0003_0013",
+    "course": "es_en",
     "word": "TO GET TO WORK",
     "pronunciation": "tu guet tu uérk",
     "description": "To arrive at your workplace.",
@@ -105,6 +118,7 @@
   },
   {
     "id": "pack_0003_0014",
+    "course": "es_en",
     "word": "TO TAKE A BREAK",
     "pronunciation": "tu téik a bréik",
     "description": "To stop working for a short time to rest.",
@@ -113,6 +127,7 @@
   },
   {
     "id": "pack_0003_0015",
+    "course": "es_en",
     "word": "TO GRAB SOME LUNCH",
     "pronunciation": "tu grab sam lanch",
     "description": "To quickly get something to eat at midday.",
@@ -121,6 +136,7 @@
   },
   {
     "id": "pack_0003_0016",
+    "course": "es_en",
     "word": "TO WORK LATE",
     "pronunciation": "tu uérk léit",
     "description": "To keep working after your normal finishing time.",
@@ -129,6 +145,7 @@
   },
   {
     "id": "pack_0003_0017",
+    "course": "es_en",
     "word": "TO GET HOME",
     "pronunciation": "tu guet jóum",
     "description": "To arrive at your house.",
@@ -137,6 +154,7 @@
   },
   {
     "id": "pack_0003_0018",
+    "course": "es_en",
     "word": "TO UNWIND",
     "pronunciation": "tu an-uáind",
     "description": "To stop feeling tense and start enjoying yourself.",
@@ -145,6 +163,7 @@
   },
   {
     "id": "pack_0003_0019",
+    "course": "es_en",
     "word": "TO DO THE DISHES",
     "pronunciation": "tu du de dí-shes",
     "description": "To wash the plates, glasses and cutlery after a meal.",
@@ -153,6 +172,7 @@
   },
   {
     "id": "pack_0003_0020",
+    "course": "es_en",
     "word": "TO TIDY UP",
     "pronunciation": "tu tái-di ap",
     "description": "To put things back in order so a place looks neat.",
@@ -161,6 +181,7 @@
   },
   {
     "id": "pack_0003_0021",
+    "course": "es_en",
     "word": "TO CATCH UP ON",
     "pronunciation": "tu katch ap on",
     "description": "To do something you did not have time to do earlier.",
@@ -169,6 +190,7 @@
   },
   {
     "id": "pack_0003_0022",
+    "course": "es_en",
     "word": "TO SCROLL THROUGH MY PHONE",
     "pronunciation": "tu scróul zru mai fóun",
     "description": "To move through content on your phone without a clear purpose.",
@@ -177,6 +199,7 @@
   },
   {
     "id": "pack_0003_0023",
+    "course": "es_en",
     "word": "TO CHECK MY NOTIFICATIONS",
     "pronunciation": "tu chek mai nou-ti-fi-kéi-shons",
     "description": "To look at the alerts your apps have sent you.",
@@ -185,6 +208,7 @@
   },
   {
     "id": "pack_0003_0024",
+    "course": "es_en",
     "word": "TO STAY UP LATE",
     "pronunciation": "tu stéi ap léit",
     "description": "To go to bed much later than usual.",
@@ -193,6 +217,7 @@
   },
   {
     "id": "pack_0003_0025",
+    "course": "es_en",
     "word": "TO GO TO BED",
     "pronunciation": "tu góu tu bed",
     "description": "To get into bed in order to sleep.",
@@ -201,6 +226,7 @@
   },
   {
     "id": "pack_0003_0026",
+    "course": "es_en",
     "word": "TO GET A GOOD NIGHT'S SLEEP",
     "pronunciation": "tu guet a gud náits slip",
     "description": "To sleep well for a full night.",
@@ -209,6 +235,7 @@
   },
   {
     "id": "pack_0003_0027",
+    "course": "es_en",
     "word": "TO SLEEP IN",
     "pronunciation": "tu slip in",
     "description": "To sleep later than usual because you choose to.",
@@ -217,6 +244,7 @@
   },
   {
     "id": "pack_0003_0028",
+    "course": "es_en",
     "word": "TO HAVE A LIE-IN",
     "pronunciation": "tu jav a lái-in",
     "description": "British expression for staying in bed longer than usual in the morning.",

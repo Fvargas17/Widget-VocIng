@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../l10n/app_strings.dart';
 import '../models/vocabulary_item.dart';
 import '../services/card_density_notifier.dart';
 import '../services/card_density_service.dart';
 import '../services/dark_mode_notifier.dart';
 import '../services/favorites_service.dart';
+import '../services/language_course_service.dart';
 import '../services/pack_service.dart';
 import '../services/pet_notifier.dart';
 import '../services/pet_service.dart';
@@ -58,7 +60,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _checkForNewPacks() async {
-    final newPacks = await checkForNewUndismissedPacks();
+    // Solo los packs del curso activo: ofrecer vocabulario de otro idioma
+    // sería ruido, y descargarlo no cambiaría nada de lo que se ve.
+    final newPacks = await checkForNewUndismissedPacks(
+      course: await getLanguageCourse(),
+    );
     if (newPacks.isEmpty || !mounted) return;
 
     final totalWords = newPacks.fold<int>(
@@ -66,23 +72,21 @@ class _HomeScreenState extends State<HomeScreen> {
       (sum, pack) => sum + pack.wordCount,
     );
     final packNames = newPacks.map((pack) => pack.name).join(', ');
+    final strings = AppStrings.of(context);
 
     final shouldViewPacks = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Contenido nuevo disponible'),
-        content: Text(
-          'Hay $totalWords palabras nuevas disponibles ($packNames). '
-          'Puedes descargarlas desde Administrar packs.',
-        ),
+        title: Text(strings.newContentTitle),
+        content: Text(strings.newContentBody(totalWords, packNames)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Ahora no'),
+            child: Text(strings.notNow),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Ver'),
+            child: Text(strings.view),
           ),
         ],
       ),
@@ -152,19 +156,20 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final items = _items;
     final current = _currentItem;
+    final strings = AppStrings.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Widget VocIng')),
       drawer: const AppDrawer(currentScreen: AppScreen.home),
       body: items == null
           ? const Center(child: CircularProgressIndicator())
           : current == null
-          ? const Center(
+          ? Center(
               child: Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child: Text(
-                  '¡Has aprendido todas las palabras disponibles!',
+                  strings.allWordsLearned,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 18),
                 ),
               ),
             )
@@ -212,14 +217,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   ValueListenableBuilder<Pet>(
                     valueListenable: petNotifier,
-                    builder: (context, pet, _) => ValueListenableBuilder<CardDensity>(
-                      valueListenable: cardDensityNotifier,
-                      builder: (context, density, _) => PetCompanion(
-                        pet: pet,
-                        density: density,
-                        celebrationSignal: _learnedPulse,
-                      ),
-                    ),
+                    builder: (context, pet, _) =>
+                        ValueListenableBuilder<CardDensity>(
+                          valueListenable: cardDensityNotifier,
+                          builder: (context, density, _) => PetCompanion(
+                            pet: pet,
+                            density: density,
+                            celebrationSignal: _learnedPulse,
+                          ),
+                        ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(24, 12, 24, 88),
@@ -230,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         FilledButton.icon(
                           onPressed: _markCurrentAsLearned,
                           icon: const Icon(Icons.check_circle_outline),
-                          label: const Text('Marcar como aprendida'),
+                          label: Text(strings.markAsLearned),
                         ),
                       ],
                     ),
@@ -247,7 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 FloatingActionButton(
                   heroTag: 'prev_word_fab',
                   onPressed: _hasHistory ? _showPreviousWord : null,
-                  tooltip: 'Palabra anterior',
+                  tooltip: strings.previousWord,
                   child: const Icon(Icons.arrow_back),
                 ),
                 const SizedBox(width: 24),
@@ -256,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: current == null || _activeItems.length <= 1
                       ? null
                       : _showNextWord,
-                  tooltip: 'Otra palabra',
+                  tooltip: strings.anotherWord,
                   child: const Icon(Icons.arrow_forward),
                 ),
               ],
@@ -282,7 +288,7 @@ class LearnedFeedbackBadge extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(bottom: 6),
         child: Text(
-          '¡Aprendida!',
+          AppStrings.of(context).learnedBadge,
           style: TextStyle(
             color: Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.bold,
@@ -382,6 +388,7 @@ class VocabularyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final strings = AppStrings.of(context);
     final sizes = _CardSizes.of(density);
     final cardTheme = Theme.of(context).cardTheme;
     final borderRadius =
@@ -415,8 +422,8 @@ class VocabularyCard extends StatelessWidget {
                 constraints: const BoxConstraints(),
                 padding: const EdgeInsets.all(8),
                 tooltip: isFavorite
-                    ? 'Quitar de favoritos'
-                    : 'Agregar a favoritos',
+                    ? strings.removeFromFavorites
+                    : strings.addToFavorites,
                 icon: Icon(
                   isFavorite ? Icons.star : Icons.star_border,
                   color: isFavorite

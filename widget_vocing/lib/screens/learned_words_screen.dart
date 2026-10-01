@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../data/vocabulary_repository.dart';
+import '../l10n/app_strings.dart';
 import '../models/vocabulary_item.dart';
+import '../services/language_course_service.dart';
 import '../services/learned_words_service.dart';
 import '../widgets/app_drawer.dart';
 
@@ -22,12 +24,15 @@ class _LearnedWordsScreenState extends State<LearnedWordsScreen> {
   }
 
   Future<void> _load() async {
-    final allItems = await loadVocabulary();
+    // El catálogo ya viene filtrado por curso, así que la lista (y su
+    // conteo en el AppBar) solo refleja el idioma que se está estudiando.
+    final allItems = await loadVocabulary(await getLanguageCourse());
     final learnedIds = await getLearnedWordIds();
     if (!mounted) return;
     setState(() {
-      _learnedItems =
-          allItems.where((item) => learnedIds.contains(item.id)).toList();
+      _learnedItems = allItems
+          .where((item) => learnedIds.contains(item.id))
+          .toList();
     });
   }
 
@@ -42,32 +47,31 @@ class _LearnedWordsScreenState extends State<LearnedWordsScreen> {
   @override
   Widget build(BuildContext context) {
     final learnedItems = _learnedItems;
+    final strings = AppStrings.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
           learnedItems == null
-              ? 'Palabras aprendidas'
-              : 'Palabras aprendidas (${learnedItems.length})',
+              ? strings.learnedWords
+              : strings.learnedWordsWithCount(learnedItems.length),
         ),
       ),
       drawer: const AppDrawer(currentScreen: AppScreen.learned),
-      body: _buildBody(learnedItems),
+      body: _buildBody(context, learnedItems),
     );
   }
 
-  Widget _buildBody(List<VocabularyItem>? learnedItems) {
+  Widget _buildBody(BuildContext context, List<VocabularyItem>? learnedItems) {
+    final strings = AppStrings.of(context);
     if (learnedItems == null) {
       return const Center(child: CircularProgressIndicator());
     }
 
     if (learnedItems.isEmpty) {
-      return const Center(
+      return Center(
         child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Text(
-            'Todavía no has marcado ninguna palabra como aprendida.',
-            textAlign: TextAlign.center,
-          ),
+          padding: const EdgeInsets.all(24),
+          child: Text(strings.learnedEmpty, textAlign: TextAlign.center),
         ),
       );
     }
@@ -82,7 +86,7 @@ class _LearnedWordsScreenState extends State<LearnedWordsScreen> {
             subtitle: Text(item.translation),
             trailing: IconButton(
               icon: const Icon(Icons.undo),
-              tooltip: 'Desmarcar',
+              tooltip: strings.unmark,
               onPressed: () => _unmark(item),
             ),
           ),

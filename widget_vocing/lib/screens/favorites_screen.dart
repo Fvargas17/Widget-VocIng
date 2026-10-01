@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../data/vocabulary_repository.dart';
+import '../l10n/app_strings.dart';
 import '../models/vocabulary_item.dart';
 import '../services/card_density_notifier.dart';
 import '../services/card_density_service.dart';
 import '../services/dark_mode_notifier.dart';
 import '../services/favorites_service.dart';
+import '../services/language_course_service.dart';
 import '../services/sound_service.dart';
 import '../services/theme_notifier.dart';
 import '../theme/app_theme_preset.dart';
@@ -22,6 +24,10 @@ import 'home_screen.dart' show VocabularyCard;
 ///    debería vaciarse sola.
 /// 3. No usa `VocabularyStateService`: su índice es propio y no altera la
 ///    palabra actual de Inicio ni la del widget nativo de Android.
+///
+/// Sí comparte con el resto de la app el filtro por curso de idioma: las
+/// favoritas de otro curso no aparecen aquí porque no están en el catálogo
+/// que devuelve `loadVocabulary()` (sus ids simplemente no se resuelven).
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
 
@@ -40,7 +46,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   }
 
   Future<void> _load() async {
-    final items = await loadVocabulary();
+    final items = await loadVocabulary(await getLanguageCourse());
     final favoriteIds = await getFavoriteWordIds();
     final byId = {for (final item in items) item.id: item};
 
@@ -91,20 +97,20 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
     final favorites = _favoriteItems;
+    final strings = AppStrings.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Palabras favoritas')),
+      appBar: AppBar(title: Text(strings.favoriteWords)),
       drawer: const AppDrawer(currentScreen: AppScreen.favorites),
       body: favorites == null
           ? const Center(child: CircularProgressIndicator())
           : favorites.isEmpty
-          ? const Center(
+          ? Center(
               child: Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child: Text(
-                  'Todavía no tienes palabras favoritas.\n'
-                  'Marca la estrella de una tarjeta para agregarla aquí.',
+                  strings.favoritesEmpty,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 18),
                 ),
               ),
             )
@@ -118,7 +124,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 FloatingActionButton(
                   heroTag: 'prev_favorite_fab',
                   onPressed: _index > 0 ? () => _goTo(_index - 1) : null,
-                  tooltip: 'Favorita anterior',
+                  tooltip: strings.previousFavorite,
                   child: const Icon(Icons.arrow_back),
                 ),
                 const SizedBox(width: 24),
@@ -127,7 +133,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   onPressed: _index < favorites.length - 1
                       ? () => _goTo(_index + 1)
                       : null,
-                  tooltip: 'Siguiente favorita',
+                  tooltip: strings.nextFavorite,
                   child: const Icon(Icons.arrow_forward),
                 ),
               ],
@@ -158,9 +164,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               ),
               const SizedBox(height: 4),
               Text(
-                favorites.length == 1
-                    ? '1 palabra en favoritos'
-                    : '${favorites.length} palabras en favoritos',
+                AppStrings.of(context).favoritesCount(favorites.length),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
@@ -180,7 +184,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 transitionBuilder: (child, animation) => FadeTransition(
                   opacity: animation,
                   child: ScaleTransition(
-                    scale: Tween<double>(begin: 0.94, end: 1).animate(animation),
+                    scale: Tween<double>(
+                      begin: 0.94,
+                      end: 1,
+                    ).animate(animation),
                     child: child,
                   ),
                 ),

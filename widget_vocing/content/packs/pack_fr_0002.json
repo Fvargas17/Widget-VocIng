@@ -1,0 +1,92 @@
+[
+  {
+    "id": "pack_fr_0002_0001",
+    "course": "en_fr",
+    "word": "ÊTRE DU MATIN",
+    "pronunciation": "ettr dew ma-TAHN",
+    "description": "Aimer se lever tôt et commencer sa journée de bonne heure.",
+    "translation": "To be an early bird, a morning person.",
+    "example": "Je suis du matin, donc je fais le plus gros de mon travail avant midi."
+  },
+  {
+    "id": "pack_fr_0002_0002",
+    "course": "en_fr",
+    "word": "UN COUCHE-TARD",
+    "pronunciation": "uhn koosh-TAR",
+    "description": "Quelqu'un qui préfère rester éveillé et actif tard le soir.",
+    "translation": "A night owl.",
+    "example": "Je suis un couche-tard, donc je suis plus productif le soir."
+  },
+  {
+    "id": "pack_fr_0002_0003",
+    "course": "en_fr",
+    "word": "CARBURER AU CAFÉ",
+    "pronunciation": "kar-bew-RAY oh ka-FAY",
+    "description": "Avoir besoin de café pour tenir le rythme.",
+    "translation": "To run on coffee.",
+    "example": "Je carbure au café quand la semaine est chargée."
+  },
+  {
+    "id": "pack_fr_0002_0004",
+    "course": "en_fr",
+    "word": "TROUVER UN ÉQUILIBRE",
+    "pronunciation": "troo-VAY uhn ay-kee-LEEBR",
+    "description": "Réussir à gérer plusieurs aspects de sa vie en même temps.",
+    "translation": "To find a balance.",
+    "example": "J'essaie de trouver un équilibre entre ma carrière et ma vie personnelle."
+  },
+  {
+    "id": "pack_fr_0002_0005",
+    "course": "en_fr",
+    "word": "S'Y TENIR",
+    "pronunciation": "see tuh-NEER",
+    "description": "Continuer à faire quelque chose sans abandonner.",
+    "translation": "To stick to it, to keep at it.",
+    "example": "C'est difficile de s'y tenir quand mon emploi du temps change tout le temps."
+  },
+  {
+    "id": "pack_fr_0002_0006",
+    "course": "en_fr",
+    "word": "PRENDRE UN RYTHME",
+    "pronunciation": "prahndr uhn REETM",
+    "description": "Installer une habitude régulière.",
+    "translation": "To get into a routine.",
+    "example": "Il m'a fallu quelques semaines pour prendre un rythme dans mon nouveau travail."
+  },
+  {
+    "id": "pack_fr_0002_0007",
+    "course": "en_fr",
+    "word": "ÊTRE DÉBORDÉ",
+    "pronunciation": "ettr day-bor-DAY",
+    "description": "Avoir beaucoup trop de travail à gérer.",
+    "translation": "To be snowed under, swamped with work.",
+    "example": "Je suis débordé de travail en ce moment."
+  },
+  {
+    "id": "pack_fr_0002_0008",
+    "course": "en_fr",
+    "word": "PROFITER DE SON TEMPS",
+    "pronunciation": "pro-fee-TAY duh sohn TAHN",
+    "description": "Utiliser au mieux le temps dont on dispose.",
+    "translation": "To make the most of your time.",
+    "example": "J'essaie de profiter de mes matinées, c'est là que je suis le plus concentré."
+  },
+  {
+    "id": "pack_fr_0002_0009",
+    "course": "en_fr",
+    "word": "DÉCOMPRESSER",
+    "pronunciation": "day-kohn-pre-SAY",
+    "description": "Se détendre peu à peu après une période chargée ou stressante.",
+    "translation": "To wind down, to decompress.",
+    "example": "Je décompresse en lisant ou en écoutant de la musique avant de dormir."
+  },
+  {
+    "id": "pack_fr_0002_0010",
+    "course": "en_fr",
+    "word": "PRENDRE SES MARQUES",
+    "pronunciation": "prahndr say MARK",
+    "description": "Se sentir à l'aise dans une nouvelle situation ou habitude.",
+    "translation": "To get into the swing of things, to find your feet.",
+    "example": "Il m'a fallu quelques jours pour prendre mes marques après les vacances."
+  }
+]

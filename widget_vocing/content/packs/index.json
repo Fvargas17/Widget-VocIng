@@ -1,6 +1,7 @@
 [
   {
     "id": "pack_0001",
+    "course": "es_en",
     "name": "Verbos comunes",
     "version": 1,
     "wordCount": 5,
@@ -8,6 +9,7 @@
   },
   {
     "id": "pack_0002",
+    "course": "es_en",
     "name": "Rutina y energía diaria",
     "version": 1,
     "wordCount": 10,
@@ -15,6 +17,7 @@
   },
   {
     "id": "pack_0003",
+    "course": "es_en",
     "name": "Rutina diaria paso a paso",
     "version": 1,
     "wordCount": 28,
@@ -22,9 +25,42 @@
   },
   {
     "id": "pack_0004",
+    "course": "es_en",
     "name": "Economía y actualidad",
     "version": 1,
     "wordCount": 7,
     "file": "pack_0004.json"
+  },
+  {
+    "id": "pack_fr_0001",
+    "course": "en_fr",
+    "name": "Common verbs",
+    "version": 1,
+    "wordCount": 5,
+    "file": "pack_fr_0001.json"
+  },
+  {
+    "id": "pack_fr_0002",
+    "course": "en_fr",
+    "name": "Daily routine and energy",
+    "version": 1,
+    "wordCount": 10,
+    "file": "pack_fr_0002.json"
+  },
+  {
+    "id": "pack_fr_0003",
+    "course": "en_fr",
+    "name": "Daily routine step by step",
+    "version": 1,
+    "wordCount": 28,
+    "file": "pack_fr_0003.json"
+  },
+  {
+    "id": "pack_fr_0004",
+    "course": "en_fr",
+    "name": "Economy and current affairs",
+    "version": 1,
+    "wordCount": 7,
+    "file": "pack_fr_0004.json"
   }
 ]

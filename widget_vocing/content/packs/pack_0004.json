@@ -1,6 +1,7 @@
 [
   {
     "id": "pack_0004_0001",
+    "course": "es_en",
     "word": "CONTENTIOUS",
     "pronunciation": "con-tén-shos",
     "description": "Likely to cause disagreement or argument.",
@@ -9,6 +10,7 @@
   },
   {
     "id": "pack_0004_0002",
+    "course": "es_en",
     "word": "TO OUTPACE",
     "pronunciation": "tu áut-peis",
     "description": "To move or grow faster than someone or something else.",
@@ -17,6 +19,7 @@
   },
   {
     "id": "pack_0004_0003",
+    "course": "es_en",
     "word": "RIVAL",
     "pronunciation": "rái-val",
     "description": "A person or company competing with another for the same thing.",
@@ -25,6 +28,7 @@
   },
   {
     "id": "pack_0004_0004",
+    "course": "es_en",
     "word": "KNOWLEDGE ECONOMY",
     "pronunciation": "ná-lich i-có-no-mi",
     "description": "An economy based on skills, information and ideas rather than manufacturing.",
@@ -33,6 +37,7 @@
   },
   {
     "id": "pack_0004_0005",
+    "course": "es_en",
     "word": "FINANCE",
     "pronunciation": "fái-nans",
     "description": "The management of money, or the money available to a person or company.",
@@ -41,6 +46,7 @@
   },
   {
     "id": "pack_0004_0006",
+    "course": "es_en",
     "word": "REGARDLESS",
     "pronunciation": "ri-gárd-les",
     "description": "Without being affected by something; anyway.",
@@ -49,6 +55,7 @@
   },
   {
     "id": "pack_0004_0007",
+    "course": "es_en",
     "word": "TO SEGREGATE",
     "pronunciation": "tu sé-gri-gueit",
     "description": "To separate one group of people or things from another.",

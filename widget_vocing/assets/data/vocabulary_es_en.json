@@ -1,6 +1,7 @@
 [
   {
     "id": "base_0001",
+    "course": "es_en",
     "word": "OVERWHELMED",
     "pronunciation": "óver-uélmd",
     "description": "Feeling unable to cope because there is too much to deal with.",
@@ -9,6 +10,7 @@
   },
   {
     "id": "base_0002",
+    "course": "es_en",
     "word": "PROCRASTINATE",
     "pronunciation": "pro-crás-ti-neit",
     "description": "To delay or postpone doing something that needs to be done.",
@@ -17,6 +19,7 @@
   },
   {
     "id": "base_0003",
+    "course": "es_en",
     "word": "TO BRING UP",
     "pronunciation": "tu bring ap",
     "description": "To mention or introduce a topic in a conversation.",
@@ -25,6 +28,7 @@
   },
   {
     "id": "base_0004",
+    "course": "es_en",
     "word": "STRAIGHTFORWARD",
     "pronunciation": "streit-fór-uord",
     "description": "Simple and easy to understand or do, without complications.",
@@ -33,6 +37,7 @@
   },
   {
     "id": "base_0005",
+    "course": "es_en",
     "word": "TO GET THE HANG OF IT",
     "pronunciation": "tu guet de jang of it",
     "description": "To learn how to do something after practicing it.",

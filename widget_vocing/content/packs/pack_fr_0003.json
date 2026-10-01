@@ -1,0 +1,254 @@
+[
+  {
+    "id": "pack_fr_0003_0001",
+    "course": "en_fr",
+    "word": "SE RÉVEILLER",
+    "pronunciation": "suh ray-vay-YAY",
+    "description": "Cesser de dormir et reprendre conscience.",
+    "translation": "To wake up.",
+    "example": "Je me réveille généralement à six heures, même le week-end."
+  },
+  {
+    "id": "pack_fr_0003_0002",
+    "course": "en_fr",
+    "word": "SE LEVER",
+    "pronunciation": "suh luh-VAY",
+    "description": "Sortir du lit après s'être réveillé.",
+    "translation": "To get out of bed.",
+    "example": "Je me réveille tôt, mais je mets dix minutes à me lever."
+  },
+  {
+    "id": "pack_fr_0003_0003",
+    "course": "en_fr",
+    "word": "REPOUSSER LE RÉVEIL",
+    "pronunciation": "ruh-poo-SAY luh ray-VAY",
+    "description": "Appuyer sur le bouton qui retarde l'alarme de quelques minutes.",
+    "translation": "To hit the snooze button.",
+    "example": "J'ai repoussé le réveil trois fois ce matin."
+  },
+  {
+    "id": "pack_fr_0003_0004",
+    "course": "en_fr",
+    "word": "SE PRÉPARER",
+    "pronunciation": "suh pray-pa-RAY",
+    "description": "S'apprêter avant d'aller quelque part.",
+    "translation": "To get ready.",
+    "example": "Je mets environ vingt minutes à me préparer pour le travail."
+  },
+  {
+    "id": "pack_fr_0003_0005",
+    "course": "en_fr",
+    "word": "SE RAFRAÎCHIR",
+    "pronunciation": "suh ra-fray-SHEER",
+    "description": "Se laver rapidement le visage et les mains pour se sentir propre et réveillé.",
+    "translation": "To freshen up.",
+    "example": "Laisse-moi une minute pour me rafraîchir avant de partir."
+  },
+  {
+    "id": "pack_fr_0003_0006",
+    "course": "en_fr",
+    "word": "PRENDRE UNE DOUCHE",
+    "pronunciation": "prahndr ewn DOOSH",
+    "description": "Se laver tout le corps sous l'eau.",
+    "translation": "To take a shower.",
+    "example": "Je prends une douche juste après la salle de sport."
+  },
+  {
+    "id": "pack_fr_0003_0007",
+    "course": "en_fr",
+    "word": "S'HABILLER",
+    "pronunciation": "sa-bee-YAY",
+    "description": "Mettre ses vêtements.",
+    "translation": "To get dressed.",
+    "example": "Je m'habille pendant que le café passe."
+  },
+  {
+    "id": "pack_fr_0003_0008",
+    "course": "en_fr",
+    "word": "MANGER SUR LE POUCE",
+    "pronunciation": "mahn-ZHAY sewr luh POOSS",
+    "description": "Manger quelque chose de léger et rapide, sans s'asseoir vraiment.",
+    "translation": "To grab a quick bite, to eat on the go.",
+    "example": "Le matin, je mange sur le pouce avant de partir."
+  },
+  {
+    "id": "pack_fr_0003_0009",
+    "course": "en_fr",
+    "word": "FAIRE DU CAFÉ",
+    "pronunciation": "fair dew ka-FAY",
+    "description": "Préparer du café.",
+    "translation": "To make coffee.",
+    "example": "La première chose que je fais le matin, c'est faire du café."
+  },
+  {
+    "id": "pack_fr_0003_0010",
+    "course": "en_fr",
+    "word": "PARTIR AU TRAVAIL",
+    "pronunciation": "par-TEER oh tra-VY",
+    "description": "Se mettre en route vers son lieu de travail.",
+    "translation": "To head to work.",
+    "example": "Je pars au travail vers sept heures et demie."
+  },
+  {
+    "id": "pack_fr_0003_0011",
+    "course": "en_fr",
+    "word": "FAIRE LA NAVETTE",
+    "pronunciation": "fair la na-VETT",
+    "description": "Faire régulièrement le trajet entre chez soi et son travail.",
+    "translation": "To commute.",
+    "example": "Je fais la navette en voiture, ça me prend environ quarante minutes."
+  },
+  {
+    "id": "pack_fr_0003_0012",
+    "course": "en_fr",
+    "word": "FAIRE DES COURSES",
+    "pronunciation": "fair day KOORSS",
+    "description": "Sortir pour faire les petites tâches nécessaires, comme les achats.",
+    "translation": "To run errands, to do the shopping.",
+    "example": "Je fais mes courses le samedi matin pour garder mon dimanche libre."
+  },
+  {
+    "id": "pack_fr_0003_0013",
+    "course": "en_fr",
+    "word": "ARRIVER AU TRAVAIL",
+    "pronunciation": "a-ree-VAY oh tra-VY",
+    "description": "Atteindre son lieu de travail.",
+    "translation": "To get to work, to arrive at work.",
+    "example": "J'arrive au travail vers huit heures et je commence par mes courriels."
+  },
+  {
+    "id": "pack_fr_0003_0014",
+    "course": "en_fr",
+    "word": "FAIRE UNE PAUSE",
+    "pronunciation": "fair ewn POHZ",
+    "description": "S'arrêter de travailler un court moment pour se reposer.",
+    "translation": "To take a break.",
+    "example": "Je fais une courte pause toutes les deux heures pour me vider la tête."
+  },
+  {
+    "id": "pack_fr_0003_0015",
+    "course": "en_fr",
+    "word": "ALLER MANGER UN MORCEAU",
+    "pronunciation": "a-LAY mahn-ZHAY uhn mor-SOH",
+    "description": "Aller chercher rapidement quelque chose à manger à midi.",
+    "translation": "To grab some lunch, to get a bite to eat.",
+    "example": "Tu veux aller manger un morceau vers une heure ?"
+  },
+  {
+    "id": "pack_fr_0003_0016",
+    "course": "en_fr",
+    "word": "TRAVAILLER TARD",
+    "pronunciation": "tra-va-YAY TAR",
+    "description": "Continuer à travailler après son horaire habituel.",
+    "translation": "To work late.",
+    "example": "J'ai dû travailler tard parce qu'on finalisait une mise en production."
+  },
+  {
+    "id": "pack_fr_0003_0017",
+    "course": "en_fr",
+    "word": "RENTRER CHEZ SOI",
+    "pronunciation": "rahn-TRAY shay SWAH",
+    "description": "Arriver à la maison.",
+    "translation": "To get home.",
+    "example": "Je rentre chez moi un peu après six heures."
+  },
+  {
+    "id": "pack_fr_0003_0018",
+    "course": "en_fr",
+    "word": "SE DÉTENDRE",
+    "pronunciation": "suh day-TAHNDR",
+    "description": "Relâcher la tension et commencer à profiter du moment.",
+    "translation": "To unwind, to relax.",
+    "example": "Jouer à des jeux vidéo avec mes amis, c'est comme ça que je me détends."
+  },
+  {
+    "id": "pack_fr_0003_0019",
+    "course": "en_fr",
+    "word": "FAIRE LA VAISSELLE",
+    "pronunciation": "fair la vay-SELL",
+    "description": "Laver les assiettes, les verres et les couverts après le repas.",
+    "translation": "To do the dishes.",
+    "example": "Je cuisine et mon frère fait la vaisselle."
+  },
+  {
+    "id": "pack_fr_0003_0020",
+    "course": "en_fr",
+    "word": "RANGER",
+    "pronunciation": "rahn-ZHAY",
+    "description": "Remettre les choses en ordre pour qu'un endroit soit net.",
+    "translation": "To tidy up, to put things away.",
+    "example": "Je range un peu avant d'aller me coucher."
+  },
+  {
+    "id": "pack_fr_0003_0021",
+    "course": "en_fr",
+    "word": "RATTRAPER LE RETARD",
+    "pronunciation": "ra-tra-PAY luh ruh-TAR",
+    "description": "Faire ce qu'on n'a pas eu le temps de faire plus tôt.",
+    "translation": "To catch up on something.",
+    "example": "Je profite du week-end pour rattraper le retard de sommeil et de messages."
+  },
+  {
+    "id": "pack_fr_0003_0022",
+    "course": "en_fr",
+    "word": "SCROLLER SUR SON TÉLÉPHONE",
+    "pronunciation": "skro-LAY sewr sohn tay-lay-FUNN",
+    "description": "Faire défiler du contenu sur son téléphone sans but précis.",
+    "translation": "To scroll through your phone.",
+    "example": "Je scrolle beaucoup trop sur mon téléphone avant de dormir."
+  },
+  {
+    "id": "pack_fr_0003_0023",
+    "course": "en_fr",
+    "word": "REGARDER SES NOTIFICATIONS",
+    "pronunciation": "ruh-gar-DAY say no-tee-fee-ka-SYOHN",
+    "description": "Consulter les alertes envoyées par ses applications.",
+    "translation": "To check your notifications.",
+    "example": "Je regarde mes notifications une fois le matin et une fois le soir."
+  },
+  {
+    "id": "pack_fr_0003_0024",
+    "course": "en_fr",
+    "word": "VEILLER TARD",
+    "pronunciation": "vay-YAY TAR",
+    "description": "Se coucher bien plus tard que d'habitude.",
+    "translation": "To stay up late.",
+    "example": "J'ai veillé tard pour avancer sur mon projet personnel."
+  },
+  {
+    "id": "pack_fr_0003_0025",
+    "course": "en_fr",
+    "word": "ALLER SE COUCHER",
+    "pronunciation": "a-LAY suh koo-SHAY",
+    "description": "Se mettre au lit pour dormir.",
+    "translation": "To go to bed.",
+    "example": "J'essaie d'aller me coucher avant onze heures en semaine."
+  },
+  {
+    "id": "pack_fr_0003_0026",
+    "course": "en_fr",
+    "word": "BIEN DORMIR",
+    "pronunciation": "byahn dor-MEER",
+    "description": "Dormir profondément toute la nuit.",
+    "translation": "To get a good night's sleep.",
+    "example": "Je réfléchis beaucoup mieux quand j'ai bien dormi."
+  },
+  {
+    "id": "pack_fr_0003_0027",
+    "course": "en_fr",
+    "word": "FAIRE LA GRASSE MATINÉE",
+    "pronunciation": "fair la grass ma-tee-NAY",
+    "description": "Dormir plus tard que d'habitude, par plaisir.",
+    "translation": "To sleep in.",
+    "example": "Le dimanche, j'aime faire la grasse matinée jusqu'à dix heures."
+  },
+  {
+    "id": "pack_fr_0003_0028",
+    "course": "en_fr",
+    "word": "TRAÎNER AU LIT",
+    "pronunciation": "tray-NAY oh LEE",
+    "description": "Rester un bon moment de plus au lit le matin.",
+    "translation": "To have a lie-in, to linger in bed.",
+    "example": "Demain je vais traîner au lit, je ne travaille pas."
+  }
+]

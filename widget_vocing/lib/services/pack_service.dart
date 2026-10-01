@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/vocabulary_repository.dart' show packsDirectoryName;
+import '../models/language_course.dart';
 
 /// URL raw de GitHub donde viven los packs de vocabulario publicados.
 /// Al hacer commit de un nuevo pack en `content/packs/` de este repo,
@@ -40,6 +41,7 @@ class PackMetadata {
     required this.version,
     required this.wordCount,
     required this.file,
+    required this.course,
   });
 
   final String id;
@@ -48,6 +50,10 @@ class PackMetadata {
   final int wordCount;
   final String file;
 
+  /// Curso al que pertenece el pack. Un pack es siempre de un solo curso, así
+  /// que su `name` ya viene en el idioma base de ese curso y no se traduce.
+  final LanguageCourse course;
+
   factory PackMetadata.fromJson(Map<String, dynamic> json) {
     return PackMetadata(
       id: json['id'] as String,
@@ -55,6 +61,9 @@ class PackMetadata {
       version: json['version'] as int,
       wordCount: json['wordCount'] as int,
       file: json['file'] as String,
+      // Mismo fallback que `VocabularyItem`: un índice publicado antes de que
+      // existieran los cursos era todo ES→EN.
+      course: LanguageCourse.fromId(json['course'] as String?),
     );
   }
 }
@@ -66,8 +75,9 @@ Future<List<PackMetadata>?> fetchRemoteIndex() async {
 
   final client = _createClient();
   try {
-    final response =
-        await client.get(Uri.parse(_indexUrl)).timeout(_fetchTimeout);
+    final response = await client
+        .get(Uri.parse(_indexUrl))
+        .timeout(_fetchTimeout);
     if (response.statusCode != 200) return null;
     final decoded = jsonDecode(response.body) as List<dynamic>;
     return decoded
@@ -121,13 +131,18 @@ Future<void> dismissPacks(List<PackMetadata> packs) async {
 }
 
 /// Compara el índice remoto contra los packs ya descargados y retorna
-/// los packs nuevos o con una versión más reciente que la local.
-Future<List<PackMetadata>> checkForNewPacks() async {
+/// los packs de [course] que son nuevos o traen una versión más reciente que
+/// la local. El filtro por curso evita ofrecer vocabulario de un idioma que
+/// el usuario no está estudiando ahora.
+Future<List<PackMetadata>> checkForNewPacks({
+  required LanguageCourse course,
+}) async {
   final remoteIndex = await fetchRemoteIndex();
   if (remoteIndex == null) return const [];
 
   final downloadedVersions = await getDownloadedPackVersions();
   return remoteIndex.where((pack) {
+    if (pack.course != course) return false;
     final downloadedVersion = downloadedVersions[pack.id];
     return downloadedVersion == null || downloadedVersion < pack.version;
   }).toList();
@@ -137,14 +152,14 @@ Future<List<PackMetadata>> checkForNewPacks() async {
 /// descartó en el diálogo de aviso para esa misma versión. Pensada para el
 /// diálogo de `HomeScreen`; la pantalla de administración de packs debe usar
 /// [checkForNewPacks] directamente, ya que ahí sí interesa ver todo.
-Future<List<PackMetadata>> checkForNewUndismissedPacks() async {
-  final newPacks = await checkForNewPacks();
+Future<List<PackMetadata>> checkForNewUndismissedPacks({
+  required LanguageCourse course,
+}) async {
+  final newPacks = await checkForNewPacks(course: course);
   if (newPacks.isEmpty) return newPacks;
 
   final dismissed = await _getDismissedVersions();
-  return newPacks
-      .where((pack) => dismissed[pack.id] != pack.version)
-      .toList();
+  return newPacks.where((pack) => dismissed[pack.id] != pack.version).toList();
 }
 
 /// Descarga el archivo de un pack y lo guarda en el directorio de documentos
