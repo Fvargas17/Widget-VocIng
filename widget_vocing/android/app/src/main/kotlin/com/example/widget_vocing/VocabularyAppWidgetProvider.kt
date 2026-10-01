@@ -12,13 +12,13 @@ import es.antonborri.home_widget.HomeWidgetBackgroundIntent
 import es.antonborri.home_widget.HomeWidgetLaunchIntent
 import es.antonborri.home_widget.HomeWidgetProvider
 
-// Colores del preset "Serene Wellness" (el default de la app) — se usan solo
+// Colores del preset "Bosque Luminoso" (el default de la app) — se usan solo
 // si `VocabularyStateService._syncWidget` todavía no corrió ni una vez (p.
 // ej. justo tras instalar y agregar el widget sin haber abierto la app).
-private const val DEFAULT_COLOR_CARD = "#FFEBD8C3"
-private const val DEFAULT_COLOR_BUTTON = "#FF5C7A52"
-private const val DEFAULT_COLOR_TEXT = "#FF2B2B2B"
-private const val DEFAULT_COLOR_TEXT_SECONDARY = "#FF5C5C52"
+private const val DEFAULT_COLOR_CARD = "#FFF4FBFA"
+private const val DEFAULT_COLOR_BUTTON = "#FF0E9E97"
+private const val DEFAULT_COLOR_TEXT = "#FF0B2624"
+private const val DEFAULT_COLOR_TEXT_SECONDARY = "#FF4C7570"
 
 class VocabularyAppWidgetProvider : HomeWidgetProvider() {
 
