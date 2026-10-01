@@ -2,12 +2,22 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../l10n/app_strings.dart';
 import '../models/vocabulary_item.dart';
+import '../services/card_density_notifier.dart';
+import '../services/card_density_service.dart';
+import '../services/dark_mode_notifier.dart';
 import '../services/favorites_service.dart';
+import '../services/language_course_service.dart';
 import '../services/pack_service.dart';
+import '../services/pet_notifier.dart';
+import '../services/pet_service.dart';
 import '../services/sound_service.dart';
+import '../services/theme_notifier.dart';
 import '../services/vocabulary_state_service.dart';
+import '../theme/app_theme_preset.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/pet_companion.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Set<String> _favoriteIds = {};
   bool _showLearnedFeedback = false;
   Timer? _learnedFeedbackTimer;
+  int _learnedPulse = 0;
 
   List<VocabularyItem>? get _items => _snapshot?.items;
   VocabularyItem? get _currentItem => _snapshot?.currentItem;
@@ -49,7 +60,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _checkForNewPacks() async {
-    final newPacks = await checkForNewUndismissedPacks();
+    // Solo los packs del curso activo: ofrecer vocabulario de otro idioma
+    // sería ruido, y descargarlo no cambiaría nada de lo que se ve.
+    final newPacks = await checkForNewUndismissedPacks(
+      course: await getLanguageCourse(),
+    );
     if (newPacks.isEmpty || !mounted) return;
 
     final totalWords = newPacks.fold<int>(
@@ -57,23 +72,21 @@ class _HomeScreenState extends State<HomeScreen> {
       (sum, pack) => sum + pack.wordCount,
     );
     final packNames = newPacks.map((pack) => pack.name).join(', ');
+    final strings = AppStrings.of(context);
 
     final shouldViewPacks = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Contenido nuevo disponible'),
-        content: Text(
-          'Hay $totalWords palabras nuevas disponibles ($packNames). '
-          'Puedes descargarlas desde Administrar packs.',
-        ),
+        title: Text(strings.newContentTitle),
+        content: Text(strings.newContentBody(totalWords, packNames)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Ahora no'),
+            child: Text(strings.notNow),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Ver'),
+            child: Text(strings.view),
           ),
         ],
       ),
@@ -108,7 +121,10 @@ class _HomeScreenState extends State<HomeScreen> {
     playAppSound(AppSound.learned);
     final snapshot = await _stateService.markCurrentAsLearned();
     if (!mounted) return;
-    setState(() => _snapshot = snapshot);
+    setState(() {
+      _snapshot = snapshot;
+      _learnedPulse++;
+    });
     _flashLearnedFeedback();
   }
 
@@ -140,19 +156,20 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final items = _items;
     final current = _currentItem;
+    final strings = AppStrings.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Widget VocIng')),
       drawer: const AppDrawer(currentScreen: AppScreen.home),
       body: items == null
           ? const Center(child: CircularProgressIndicator())
           : current == null
-          ? const Center(
+          ? Center(
               child: Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child: Text(
-                  '¡Has aprendido todas las palabras disponibles!',
+                  strings.allWordsLearned,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 18),
                 ),
               ),
             )
@@ -179,16 +196,36 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: child,
                                   ),
                                 ),
-                            child: VocabularyCard(
-                              key: ValueKey(current.id),
-                              item: current,
-                              isFavorite: _favoriteIds.contains(current.id),
-                              onToggleFavorite: _toggleFavorite,
+                            child: ValueListenableBuilder<CardDensity>(
+                              valueListenable: cardDensityNotifier,
+                              builder: (context, density, _) => VocabularyCard(
+                                key: ValueKey(current.id),
+                                item: current,
+                                isFavorite: _favoriteIds.contains(current.id),
+                                onToggleFavorite: _toggleFavorite,
+                                density: density,
+                                cardGradient: resolveActiveCardGradient(
+                                  selectedThemePresetIdNotifier.value,
+                                  darkModeNotifier.value,
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
+                  ),
+                  ValueListenableBuilder<Pet>(
+                    valueListenable: petNotifier,
+                    builder: (context, pet, _) =>
+                        ValueListenableBuilder<CardDensity>(
+                          valueListenable: cardDensityNotifier,
+                          builder: (context, density, _) => PetCompanion(
+                            pet: pet,
+                            density: density,
+                            celebrationSignal: _learnedPulse,
+                          ),
+                        ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(24, 12, 24, 88),
@@ -199,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         FilledButton.icon(
                           onPressed: _markCurrentAsLearned,
                           icon: const Icon(Icons.check_circle_outline),
-                          label: const Text('Marcar como aprendida'),
+                          label: Text(strings.markAsLearned),
                         ),
                       ],
                     ),
@@ -216,7 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 FloatingActionButton(
                   heroTag: 'prev_word_fab',
                   onPressed: _hasHistory ? _showPreviousWord : null,
-                  tooltip: 'Palabra anterior',
+                  tooltip: strings.previousWord,
                   child: const Icon(Icons.arrow_back),
                 ),
                 const SizedBox(width: 24),
@@ -225,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: current == null || _activeItems.length <= 1
                       ? null
                       : _showNextWord,
-                  tooltip: 'Otra palabra',
+                  tooltip: strings.anotherWord,
                   child: const Icon(Icons.arrow_forward),
                 ),
               ],
@@ -251,7 +288,7 @@ class LearnedFeedbackBadge extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(bottom: 6),
         child: Text(
-          '¡Aprendida!',
+          AppStrings.of(context).learnedBadge,
           style: TextStyle(
             color: Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.bold,
@@ -262,12 +299,78 @@ class LearnedFeedbackBadge extends StatelessWidget {
   }
 }
 
+/// Tamaños derivados de [CardDensity]: en `compact` se reduce todo (margen,
+/// padding, tipografía) a la mitad-ish sin ocultar ningún campo.
+class _CardSizes {
+  const _CardSizes({
+    required this.margin,
+    required this.paddingTop,
+    required this.paddingRest,
+    required this.wordFontSize,
+    required this.pronunciationFontSize,
+    required this.descriptionFontSize,
+    required this.translationFontSize,
+    required this.exampleFontSize,
+    required this.gapAfterWord,
+    required this.gapAfterPronunciation,
+    required this.gapAfterDescription,
+    required this.gapAfterTranslation,
+  });
+
+  factory _CardSizes.of(CardDensity density) {
+    return density == CardDensity.compact
+        ? const _CardSizes(
+            margin: 12,
+            paddingTop: 16,
+            paddingRest: 16,
+            wordFontSize: 22,
+            pronunciationFontSize: 13,
+            descriptionFontSize: 15,
+            translationFontSize: 13,
+            exampleFontSize: 13,
+            gapAfterWord: 2,
+            gapAfterPronunciation: 12,
+            gapAfterDescription: 8,
+            gapAfterTranslation: 12,
+          )
+        : const _CardSizes(
+            margin: 24,
+            paddingTop: 24,
+            paddingRest: 24,
+            wordFontSize: 30,
+            pronunciationFontSize: 16,
+            descriptionFontSize: 18,
+            translationFontSize: 16,
+            exampleFontSize: 16,
+            gapAfterWord: 4,
+            gapAfterPronunciation: 20,
+            gapAfterDescription: 12,
+            gapAfterTranslation: 20,
+          );
+  }
+
+  final double margin;
+  final double paddingTop;
+  final double paddingRest;
+  final double wordFontSize;
+  final double pronunciationFontSize;
+  final double descriptionFontSize;
+  final double translationFontSize;
+  final double exampleFontSize;
+  final double gapAfterWord;
+  final double gapAfterPronunciation;
+  final double gapAfterDescription;
+  final double gapAfterTranslation;
+}
+
 class VocabularyCard extends StatelessWidget {
   const VocabularyCard({
     super.key,
     required this.item,
     this.isFavorite = false,
     this.onToggleFavorite,
+    this.density = CardDensity.large,
+    this.cardGradient,
   });
 
   final VocabularyItem item;
@@ -276,84 +379,117 @@ class VocabularyCard extends StatelessWidget {
   /// Si es `null`, la tarjeta se dibuja sin la estrella de favoritos.
   final VoidCallback? onToggleFavorite;
 
+  final CardDensity density;
+
+  /// Degradado sutil del preset activo. Si es `null`, la tarjeta usa el
+  /// color plano que ya trae `CardThemeData`.
+  final Gradient? cardGradient;
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Card(
-      margin: const EdgeInsets.all(24),
-      child: Padding(
-        // El padding superior es menor que el resto porque la estrella ya
-        // aporta su propio margen visual arriba.
-        padding: EdgeInsets.fromLTRB(24, onToggleFavorite == null ? 24 : 8, 24, 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // La estrella ocupa su propia fila en vez de ir superpuesta en un
-            // `Stack`: así nunca tapa palabras largas, y no queda parcialmente
-            // fuera del área que recibe toques.
-            if (onToggleFavorite != null)
-              Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                  onPressed: onToggleFavorite,
-                  iconSize: 22,
-                  visualDensity: VisualDensity.compact,
-                  constraints: const BoxConstraints(),
-                  padding: const EdgeInsets.all(8),
-                  tooltip: isFavorite
-                      ? 'Quitar de favoritos'
-                      : 'Agregar a favoritos',
-                  icon: Icon(
-                    isFavorite ? Icons.star : Icons.star_border,
-                    color: isFavorite
-                        ? colorScheme.primary
-                        : colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                item.word,
-                maxLines: 1,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              '/${item.pronunciation}/',
-              style: TextStyle(
-                fontSize: 16,
-                fontStyle: FontStyle.italic,
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              item.description,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              item.translation,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              '“${item.example}”',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 16),
-            ),
-          ],
-        ),
+    final strings = AppStrings.of(context);
+    final sizes = _CardSizes.of(density);
+    final cardTheme = Theme.of(context).cardTheme;
+    final borderRadius =
+        (cardTheme.shape as RoundedRectangleBorder?)?.borderRadius
+            as BorderRadius? ??
+        BorderRadius.circular(24);
+
+    final content = Padding(
+      // El padding superior es menor que el resto porque la estrella ya
+      // aporta su propio margen visual arriba.
+      padding: EdgeInsets.fromLTRB(
+        sizes.paddingRest,
+        onToggleFavorite == null ? sizes.paddingTop : sizes.paddingTop / 3,
+        sizes.paddingRest,
+        sizes.paddingRest,
       ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // La estrella ocupa su propia fila en vez de ir superpuesta en un
+          // `Stack`: así nunca tapa palabras largas, y no queda parcialmente
+          // fuera del área que recibe toques.
+          if (onToggleFavorite != null)
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                onPressed: onToggleFavorite,
+                iconSize: 22,
+                visualDensity: VisualDensity.compact,
+                constraints: const BoxConstraints(),
+                padding: const EdgeInsets.all(8),
+                tooltip: isFavorite
+                    ? strings.removeFromFavorites
+                    : strings.addToFavorites,
+                icon: Icon(
+                  isFavorite ? Icons.star : Icons.star_border,
+                  color: isFavorite
+                      ? colorScheme.primary
+                      : colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              item.word,
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: sizes.wordFontSize,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          SizedBox(height: sizes.gapAfterWord),
+          Text(
+            '/${item.pronunciation}/',
+            style: TextStyle(
+              fontSize: sizes.pronunciationFontSize,
+              fontStyle: FontStyle.italic,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          SizedBox(height: sizes.gapAfterPronunciation),
+          Text(
+            item.description,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: sizes.descriptionFontSize),
+          ),
+          SizedBox(height: sizes.gapAfterDescription),
+          Text(
+            item.translation,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: sizes.translationFontSize),
+          ),
+          SizedBox(height: sizes.gapAfterTranslation),
+          Text(
+            '“${item.example}”',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontStyle: FontStyle.italic,
+              fontSize: sizes.exampleFontSize,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return Card(
+      margin: EdgeInsets.all(sizes.margin),
+      color: cardGradient == null ? null : Colors.transparent,
+      child: cardGradient == null
+          ? content
+          : Container(
+              decoration: BoxDecoration(
+                gradient: cardGradient,
+                borderRadius: borderRadius,
+              ),
+              child: content,
+            ),
     );
   }
 }

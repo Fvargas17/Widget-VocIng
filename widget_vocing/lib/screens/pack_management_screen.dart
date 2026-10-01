@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_strings.dart';
+import '../services/language_course_service.dart';
 import '../services/pack_service.dart';
 import '../widgets/app_drawer.dart';
 
@@ -14,7 +16,10 @@ class _PackManagementScreenState extends State<PackManagementScreen> {
   List<PackMetadata>? _packs;
   Map<String, int> _downloadedVersions = {};
   final Set<String> _busyPackIds = {};
-  String? _errorMessage;
+
+  /// Se guarda el *hecho* de que falló la consulta, no el texto del error: el
+  /// mensaje se resuelve en `build` para que siga el idioma activo.
+  bool _loadFailed = false;
 
   @override
   void initState() {
@@ -24,15 +29,16 @@ class _PackManagementScreenState extends State<PackManagementScreen> {
 
   Future<void> _load() async {
     setState(() {
-      _errorMessage = null;
+      _loadFailed = false;
     });
 
     final remoteIndex = await fetchRemoteIndex();
+    final course = await getLanguageCourse();
     if (!mounted) return;
 
     if (remoteIndex == null) {
       setState(() {
-        _errorMessage = 'No se pudo conectar. Intenta de nuevo.';
+        _loadFailed = true;
       });
       return;
     }
@@ -40,7 +46,9 @@ class _PackManagementScreenState extends State<PackManagementScreen> {
     final downloadedVersions = await getDownloadedPackVersions();
     if (!mounted) return;
     setState(() {
-      _packs = remoteIndex;
+      // Solo los packs del curso activo: descargar vocabulario de otro idioma
+      // no cambiaría nada de lo que el usuario ve hoy.
+      _packs = remoteIndex.where((pack) => pack.course == course).toList();
       _downloadedVersions = downloadedVersions;
     });
   }
@@ -52,7 +60,9 @@ class _PackManagementScreenState extends State<PackManagementScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('No se pudo descargar ${pack.name}')),
+          SnackBar(
+            content: Text(AppStrings.of(context).downloadFailed(pack.name)),
+          ),
         );
       }
     }
@@ -60,21 +70,20 @@ class _PackManagementScreenState extends State<PackManagementScreen> {
   }
 
   Future<void> _confirmDelete(PackMetadata pack) async {
+    final strings = AppStrings.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Eliminar ${pack.name}'),
-        content: const Text(
-          'Se borrará el pack descargado. Podrás volver a descargarlo cuando quieras.',
-        ),
+        title: Text(strings.deletePackTitle(pack.name)),
+        content: Text(strings.deletePackBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(strings.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Eliminar'),
+            child: Text(strings.delete),
           ),
         ],
       ),
@@ -101,31 +110,33 @@ class _PackManagementScreenState extends State<PackManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final strings = AppStrings.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Administrar packs'),
+        title: Text(strings.managePacks),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _load,
-            tooltip: 'Actualizar',
+            tooltip: strings.refresh,
           ),
         ],
       ),
       drawer: const AppDrawer(currentScreen: AppScreen.packs),
-      body: _buildBody(),
+      body: _buildBody(context),
     );
   }
 
-  Widget _buildBody() {
-    if (_errorMessage != null) {
+  Widget _buildBody(BuildContext context) {
+    final strings = AppStrings.of(context);
+    if (_loadFailed) {
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(_errorMessage!),
+            Text(strings.connectionError),
             const SizedBox(height: 12),
-            ElevatedButton(onPressed: _load, child: const Text('Reintentar')),
+            ElevatedButton(onPressed: _load, child: Text(strings.retry)),
           ],
         ),
       );
@@ -137,29 +148,30 @@ class _PackManagementScreenState extends State<PackManagementScreen> {
     }
 
     if (packs.isEmpty) {
-      return const Center(child: Text('No hay packs disponibles por ahora.'));
+      return Center(child: Text(strings.noPacksAvailable));
     }
 
     return RefreshIndicator(
       onRefresh: _load,
       child: ListView.builder(
         itemCount: packs.length,
-        itemBuilder: (context, index) => _buildPackTile(packs[index]),
+        itemBuilder: (context, index) => _buildPackTile(context, packs[index]),
       ),
     );
   }
 
-  Widget _buildPackTile(PackMetadata pack) {
+  Widget _buildPackTile(BuildContext context, PackMetadata pack) {
+    final strings = AppStrings.of(context);
     final downloadedVersion = _downloadedVersions[pack.id];
     final isDownloaded = downloadedVersion != null;
     final hasUpdate = isDownloaded && downloadedVersion < pack.version;
     final isBusy = _busyPackIds.contains(pack.id);
 
-    String subtitle = '${pack.wordCount} palabras';
+    String subtitle = strings.wordCount(pack.wordCount);
     if (hasUpdate) {
-      subtitle += ' · Actualización disponible';
+      subtitle += ' · ${strings.updateAvailable}';
     } else if (isDownloaded) {
-      subtitle += ' · Descargado';
+      subtitle += ' · ${strings.downloaded}';
     }
 
     Widget trailing;
@@ -172,13 +184,13 @@ class _PackManagementScreenState extends State<PackManagementScreen> {
     } else if (!isDownloaded || hasUpdate) {
       trailing = IconButton(
         icon: const Icon(Icons.download),
-        tooltip: 'Descargar',
+        tooltip: strings.download,
         onPressed: () => _download(pack),
       );
     } else {
       trailing = IconButton(
         icon: const Icon(Icons.delete_outline),
-        tooltip: 'Eliminar',
+        tooltip: strings.delete,
         onPressed: () => _confirmDelete(pack),
       );
     }

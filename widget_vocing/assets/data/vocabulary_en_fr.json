@@ -1,0 +1,47 @@
+[
+  {
+    "id": "base_fr_0001",
+    "course": "en_fr",
+    "word": "SUBMERGÉ",
+    "pronunciation": "sueb-mair-ZHAY",
+    "description": "Qui n'arrive plus à faire face parce qu'il y a trop de choses à gérer.",
+    "translation": "Overwhelmed; swamped because there is too much to deal with.",
+    "example": "Je me sentais complètement submergé par le travail cette semaine."
+  },
+  {
+    "id": "base_fr_0002",
+    "course": "en_fr",
+    "word": "PROCRASTINER",
+    "pronunciation": "pro-krass-tee-NAY",
+    "description": "Remettre à plus tard quelque chose qu'il faudrait faire.",
+    "translation": "To procrastinate; to put off something that needs doing.",
+    "example": "J'ai tendance à procrastiner avant de commencer un gros projet."
+  },
+  {
+    "id": "base_fr_0003",
+    "course": "en_fr",
+    "word": "ABORDER UN SUJET",
+    "pronunciation": "a-bor-DAY uhn sue-ZHAY",
+    "description": "Mentionner ou introduire un sujet dans une conversation.",
+    "translation": "To bring up a topic in a conversation.",
+    "example": "Elle a abordé un sujet intéressant pendant la réunion."
+  },
+  {
+    "id": "base_fr_0004",
+    "course": "en_fr",
+    "word": "LIMPIDE",
+    "pronunciation": "lahm-PEED",
+    "description": "Très clair et facile à comprendre, sans complications.",
+    "translation": "Straightforward; crystal clear and easy to follow.",
+    "example": "Les instructions étaient limpides, donc j'ai fini rapidement."
+  },
+  {
+    "id": "base_fr_0005",
+    "course": "en_fr",
+    "word": "PRENDRE LE COUP DE MAIN",
+    "pronunciation": "prahndr luh koo duh MAHN",
+    "description": "Apprendre à bien faire quelque chose à force de pratiquer.",
+    "translation": "To get the hang of it after practising.",
+    "example": "Ça m'a pris du temps, mais j'ai fini par prendre le coup de main."
+  }
+]

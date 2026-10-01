@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Fondo de los botones del widget nativo, a juego con el color `primary`
-     (verde salvia oscuro) del preset de tema "Serene Wellness". -->
+<!-- Forma base de los botones del widget: el color aquí es solo un
+     placeholder, `VocabularyAppWidgetProvider.tintBackground()` lo sustituye
+     en runtime por el rol `primary` del preset de tema activo. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <solid android:color="#5C7A52" />

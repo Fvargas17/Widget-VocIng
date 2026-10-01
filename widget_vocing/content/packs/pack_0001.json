@@ -1,6 +1,7 @@
 [
   {
     "id": "pack_0001_0001",
+    "course": "es_en",
     "word": "TO ACHIEVE",
     "pronunciation": "tu a-chív",
     "description": "To successfully complete something or reach a goal.",
@@ -9,6 +10,7 @@
   },
   {
     "id": "pack_0001_0002",
+    "course": "es_en",
     "word": "TO RELY ON",
     "pronunciation": "tu ri-lái on",
     "description": "To trust or depend on someone or something.",
@@ -17,6 +19,7 @@
   },
   {
     "id": "pack_0001_0003",
+    "course": "es_en",
     "word": "TO POINT OUT",
     "pronunciation": "tu point aut",
     "description": "To indicate or mention something specific.",
@@ -25,6 +28,7 @@
   },
   {
     "id": "pack_0001_0004",
+    "course": "es_en",
     "word": "RELUCTANT",
     "pronunciation": "ri-lák-tant",
     "description": "Unwilling or hesitant to do something.",
@@ -33,6 +37,7 @@
   },
   {
     "id": "pack_0001_0005",
+    "course": "es_en",
     "word": "TO FIGURE OUT",
     "pronunciation": "tu fí-guiur aut",
     "description": "To understand or solve something after thinking about it.",

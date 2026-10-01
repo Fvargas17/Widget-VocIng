@@ -12,10 +12,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:widget_vocing/data/vocabulary_repository.dart'
     as vocabulary_repository;
 import 'package:widget_vocing/main.dart';
+import 'package:widget_vocing/models/language_course.dart';
+import 'package:widget_vocing/screens/splash_screen.dart' as splash_screen;
 import 'package:widget_vocing/services/pack_service.dart' as pack_service;
 import 'package:widget_vocing/services/sound_service.dart' as sound_service;
 import 'package:widget_vocing/services/vocabulary_state_service.dart'
     as vocabulary_state_service;
+import 'package:widget_vocing/widgets/pet_companion.dart' as pet_companion;
 
 void main() {
   // Los tests no deben depender de red ni de I/O de archivos real (canales
@@ -31,6 +34,15 @@ void main() {
   // Mismo motivo para el audio: el MethodChannel de audioplayers tampoco
   // tiene handler en tests, y un `play()` sin resolver cuelga pumpAndSettle().
   sound_service.debugDisableSounds = true;
+  // PetCompanion corre un AnimationController.repeat() y se suscribe al
+  // acelerómetro por defecto en HomeScreen: el primero nunca "asienta" y el
+  // segundo no tiene handler de canal de plataforma en tests, así que ambos
+  // colgarían pumpAndSettle() indefinidamente si no se desactivan aquí.
+  pet_companion.debugDisablePetMotion = true;
+  // Sin esto, la ruta '/' mostraría la splash animada (~4.3 s) en vez de
+  // HomeScreen directo, y pumpAndSettle() tendría que correr toda la
+  // animación antes de poder revisar el contenido de HomeScreen.
+  splash_screen.debugSkipSplash = true;
   // HomeScreen consulta las palabras aprendidas vía shared_preferences en
   // initState; sin este mock, el canal de plataforma real nunca resuelve y
   // pumpAndSettle() queda esperando para siempre.
@@ -51,18 +63,21 @@ void main() {
       expect(find.byType(Card), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsNothing);
 
-      final firstWord =
-          (tester.widget(find.byType(VocabularyCard)) as VocabularyCard)
-              .item
-              .word;
+      // Sin preferencia guardada, el curso es Español → Inglés: la UI está en
+      // español y la palabra sale del pool de ese curso, no del de francés.
+      expect(find.text('Marcar como aprendida'), findsOneWidget);
+      final firstCard =
+          tester.widget(find.byType(VocabularyCard)) as VocabularyCard;
+      expect(firstCard.item.course, LanguageCourse.esEn);
+
+      final firstWord = firstCard.item.word;
 
       await tester.tap(find.byTooltip('Otra palabra'));
       await tester.pumpAndSettle();
 
-      final secondWord =
-          (tester.widget(find.byType(VocabularyCard)) as VocabularyCard)
-              .item
-              .word;
+      final secondWord = (tester.widget(
+        find.byType(VocabularyCard),
+      ) as VocabularyCard).item.word;
 
       expect(secondWord, isNot(equals(firstWord)));
     },

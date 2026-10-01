@@ -5,9 +5,16 @@ import 'app_theme_roles.dart';
 /// Construye un `ThemeData` (Material 3) completo a partir de los 7 roles
 /// de [AppThemeRoles]. Todos los presets del catálogo pasan por aquí, así
 /// que agregar un preset nuevo no requiere tocar esta función, solo definir
-/// sus roles en `app_theme_preset.dart`.
-ThemeData buildThemeFromRoles(AppThemeRoles roles) {
-  final colorScheme = ColorScheme.light(
+/// sus roles en `app_theme_preset.dart`. [brightness] selecciona entre la
+/// variante clara y la oscura del mismo preset — ambas usan exactamente la
+/// misma función, solo cambian los colores que les pasa `AppThemePreset`.
+ThemeData buildThemeFromRoles(
+  AppThemeRoles roles, {
+  Brightness brightness = Brightness.light,
+}) {
+  final isDark = brightness == Brightness.dark;
+  final colorSchemeBuilder = isDark ? ColorScheme.dark : ColorScheme.light;
+  final colorScheme = colorSchemeBuilder(
     primary: roles.primary,
     onPrimary: Colors.white,
     primaryContainer: roles.softAccent,
@@ -23,7 +30,8 @@ ThemeData buildThemeFromRoles(AppThemeRoles roles) {
     outline: roles.softAccent,
   );
 
-  final baseTextTheme = ThemeData.light().textTheme;
+  final baseTextTheme =
+      (isDark ? ThemeData.dark() : ThemeData.light()).textTheme;
   final textTheme = baseTextTheme.copyWith(
     titleLarge: baseTextTheme.titleLarge?.copyWith(
       fontWeight: FontWeight.bold,

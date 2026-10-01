@@ -1,0 +1,65 @@
+[
+  {
+    "id": "pack_fr_0004_0001",
+    "course": "en_fr",
+    "word": "CLIVANT",
+    "pronunciation": "klee-VAHN",
+    "description": "Qui divise et provoque le désaccord.",
+    "translation": "Contentious, divisive.",
+    "example": "Le télétravail reste un sujet clivant dans beaucoup d'entreprises."
+  },
+  {
+    "id": "pack_fr_0004_0002",
+    "course": "en_fr",
+    "word": "DEVANCER",
+    "pronunciation": "duh-vahn-SAY",
+    "description": "Avancer ou grandir plus vite que quelqu'un ou quelque chose d'autre.",
+    "translation": "To outpace, to get ahead of.",
+    "example": "La demande de développeurs a devancé le nombre de diplômés."
+  },
+  {
+    "id": "pack_fr_0004_0003",
+    "course": "en_fr",
+    "word": "CONCURRENT",
+    "pronunciation": "kohn-kew-RAHN",
+    "description": "Personne ou entreprise qui se bat pour la même chose qu'une autre.",
+    "translation": "Rival, competitor.",
+    "example": "Leur principal concurrent a lancé un produit similaire le mois dernier."
+  },
+  {
+    "id": "pack_fr_0004_0004",
+    "course": "en_fr",
+    "word": "ÉCONOMIE DU SAVOIR",
+    "pronunciation": "ay-ko-no-MEE dew sa-VWAR",
+    "description": "Économie fondée sur les compétences, l'information et les idées plutôt que sur l'industrie.",
+    "translation": "Knowledge economy.",
+    "example": "Dans une économie du savoir, apprendre en continu compte plus que l'ancienneté."
+  },
+  {
+    "id": "pack_fr_0004_0005",
+    "course": "en_fr",
+    "word": "LES FINANCES",
+    "pronunciation": "lay fee-NAHNSS",
+    "description": "La gestion de l'argent, ou l'argent dont dispose une personne ou une entreprise.",
+    "translation": "Finances; the money available to someone.",
+    "example": "J'essaie de remettre mes finances personnelles en ordre cette année."
+  },
+  {
+    "id": "pack_fr_0004_0006",
+    "course": "en_fr",
+    "word": "PEU IMPORTE",
+    "pronunciation": "puh am-PORT",
+    "description": "Sans tenir compte de quelque chose ; de toute façon.",
+    "translation": "Regardless of, no matter.",
+    "example": "Je vais postuler, peu importe le salaire proposé."
+  },
+  {
+    "id": "pack_fr_0004_0007",
+    "course": "en_fr",
+    "word": "CLOISONNER",
+    "pronunciation": "klwa-zo-NAY",
+    "description": "Séparer un groupe de personnes ou de choses d'un autre.",
+    "translation": "To segregate, to compartmentalize.",
+    "example": "La politique de l'entreprise cloisonnait les employés par service au lieu de par projet."
+  }
+]
